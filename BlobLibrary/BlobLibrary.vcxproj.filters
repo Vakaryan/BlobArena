@@ -27,7 +27,7 @@
     <ClInclude Include="Equipment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BlobADV.h">
+    <ClInclude Include="Skill.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,7 +41,7 @@
     <ClCompile Include="Equipment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BlobADV.cpp">
+    <ClCompile Include="Skill.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
