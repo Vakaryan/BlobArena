@@ -1,0 +1,4 @@
+Développer la version "textuelle" du jeu via les tests unitaires directement.
+
+Langues: 
+Fichier excel, export csv, cle-valeur pour localisation

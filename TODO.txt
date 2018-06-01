@@ -1,0 +1,1 @@
+Pour skill et equipement : def isEqual ds class, et redef == hors classe (recherche dans vector dans Blob)

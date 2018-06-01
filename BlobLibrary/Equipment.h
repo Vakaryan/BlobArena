@@ -10,8 +10,8 @@ class Equipment {
 public:
 	Equipment(pugi::xml_node node);  //all items will be stored in a xml doc
 
-protected:
-	ItemType label; //item type
-	std::string name; //item name
-	int price; //item price
+
+	ItemType const label; //item type
+	std::string const name; //item name
+	int const price; //item price
 };
