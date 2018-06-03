@@ -1,12 +1,14 @@
 #pragma once
 #include "Equipment.h"
+#include "AttType.h"
 
 
-enum MagicAttribute { red, green, blue };
 
 class MagicAccessory : public Equipment {
 
 public:
-	MagicAttribute const att; //determine which attribute is upgraded by accessory
-	int const accessoryPWR; //power of the accessory 
+	MagicAccessory(pugi::xml_node node);
+	~MagicAccessory();
+
+	AttType::AttType const att; //determine which attribute is upgraded by accessory
 };

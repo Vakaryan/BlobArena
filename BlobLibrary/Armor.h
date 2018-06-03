@@ -5,6 +5,7 @@
 class Armor : public Equipment {
 
 public:
-	int const armorDEF; //def provided by armor
+	Armor(pugi::xml_node node);
+	~Armor();
 };
 

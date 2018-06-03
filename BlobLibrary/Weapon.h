@@ -5,5 +5,6 @@
 class Weapon : public Equipment {
 
 public:
-	int const weaponDMG; //dmg provided by weapon
+	Weapon(pugi::xml_node node);
+	~Weapon();
 };

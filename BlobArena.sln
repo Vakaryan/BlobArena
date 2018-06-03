@@ -7,6 +7,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BlobArena", "BlobArena\Blob
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BlobLibrary", "BlobLibrary\BlobLibrary.vcxproj", "{FF23D184-14B4-4F50-8B52-8ED2AC15D94D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BlobTests", "BlobTests\BlobTests.vcxproj", "{9FA2AE72-66AB-488F-91F9-1C38A7D9AE42}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{24015DAC-5EB7-46E7-B7A1-712441C39AEC}"
+	ProjectSection(SolutionItems) = preProject
+		database.xml = database.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +38,14 @@ Global
 		{FF23D184-14B4-4F50-8B52-8ED2AC15D94D}.Release|x64.Build.0 = Release|x64
 		{FF23D184-14B4-4F50-8B52-8ED2AC15D94D}.Release|x86.ActiveCfg = Release|Win32
 		{FF23D184-14B4-4F50-8B52-8ED2AC15D94D}.Release|x86.Build.0 = Release|Win32
+		{9FA2AE72-66AB-488F-91F9-1C38A7D9AE42}.Debug|x64.ActiveCfg = Debug|x64
+		{9FA2AE72-66AB-488F-91F9-1C38A7D9AE42}.Debug|x64.Build.0 = Debug|x64
+		{9FA2AE72-66AB-488F-91F9-1C38A7D9AE42}.Debug|x86.ActiveCfg = Debug|Win32
+		{9FA2AE72-66AB-488F-91F9-1C38A7D9AE42}.Debug|x86.Build.0 = Debug|Win32
+		{9FA2AE72-66AB-488F-91F9-1C38A7D9AE42}.Release|x64.ActiveCfg = Release|x64
+		{9FA2AE72-66AB-488F-91F9-1C38A7D9AE42}.Release|x64.Build.0 = Release|x64
+		{9FA2AE72-66AB-488F-91F9-1C38A7D9AE42}.Release|x86.ActiveCfg = Release|Win32
+		{9FA2AE72-66AB-488F-91F9-1C38A7D9AE42}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
