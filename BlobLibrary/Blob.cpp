@@ -10,16 +10,22 @@ Blob::Blob(std::string const &name)
 	: name(name),
 	lvl(1),
 	HP(BASE_HP),
-	MP(BASE_MP),
+	EP(BASE_EP),
+	MAX_HP(BASE_HP),
+	MAX_EP(BASE_EP),
 	atk(BASE_ATK),
 	def(BASE_DEF),
 	magic{ BASE_MAG, BASE_MAG, BASE_MAG },
 	alive(true),
 	color(sf::Color::White),
 	size(50),
-	money(0)
+	money(0),
+	main_mag(AttType::physical)
 {
 }
+
+
+
 
 
 Blob::Blob(std::string const &name, int const& nlvl, std::vector<Equipment*> &all_equipments, std::vector<Skill*> &all_skills)
@@ -28,39 +34,55 @@ Blob::Blob(std::string const &name, int const& nlvl, std::vector<Equipment*> &al
 	alive(true),
 	money(0)
 {
-	HP = BASE_HP + (nlvl-1) * COEFF_LVLUP;
-	MP = BASE_MP + (nlvl-1) * COEFF_LVLUP;
-	atk = BASE_ATK + (nlvl-1) * COEFF_LVLUP;
-	def = BASE_DEF + (nlvl-1) * COEFF_LVLUP;
-	magic[0] = magic[1] = magic [2] = d(nlvl) + 1;
-	int main_mag = *std::max_element(magic, magic + 3);
+	HP = MAX_HP = BASE_HP + (nlvl - 1) * COEFF_LVLUP;
+	EP = MAX_EP = BASE_EP + (nlvl - 1) * COEFF_LVLUP * 2;
+	atk = BASE_ATK + (nlvl - 1) * COEFF_LVLUP;
+	def = BASE_DEF + (nlvl - 1) * COEFF_LVLUP;
+	magic[0] = d(nlvl) + 1;
+	magic[1] = d(nlvl) + 1;
+	magic[2] = d(nlvl) + 1;
+	main_mag = AttType::AttType(*std::max_element(magic, magic + 3));
 	color = colorSFRGB(main_mag);
 	size = 50 + (nlvl - 1) * COEFF_LVLUP;
-	
-	//an adv blob gets (at max) as many skills as lvls above 1
-	int id = 0;
-	for (int i = 0; i < nlvl - 1; i++) {
-		id = d(all_skills.size());
-		getSkill(all_skills[id]);
+
+
+	int tier;
+	if (nlvl < 5) {
+		tier = 1;
 	}
-	
+	else if (nlvl > 4 && nlvl < 8) {
+		tier = 2;
+	}
+	else {
+		tier = 3;
+	}
+
+	//an adv blob gets 1 skill of the same tier as him with its main_mag attribute
+	//2 more random skills inferior or equal to their tier 
+	getSkill(all_skills[(tier - 1) + main_mag]);
+	getSkill(all_skills[(d(tier) - 1) + d(3) - 1]);
+	getSkill(all_skills[(d(tier) - 1) + d(3) - 1]);
+
 	/*
-	3rd-tier blob (lvl 2-4) have 1 lvl1 eq and 1 
+	3rd-tier blob (lvl 2-4) have 1 lvl1 eq and 1
 	2nd-tier blob (lvl 5-7) have 1 lvl1 eq & 1 lvl2 eq
 	1st-tier blob (lvl 8-10) have 1 lvl1 eq & 1 lvl2 eq & 1 lvl3 eq
 	there's 5 equipments for each lvl (1 armor, 1 weapon, 3 accessories)
 	exception may occure when 2nd-tier and 1st-tier blobs get lvl2-lvl3 equipments of same type as the previous ones
 	*/
 	//3rd-tier
-	int k = d(3)-1;
-	if (k == 3) {
-		equip(all_equipments[k + main_mag]);
-	}
-	else {
-		equip(all_equipments[k]);
-	}
-	//2nd-tier
-	if (nlvl > 4 && nlvl < 8) {
+	int k = d(3) - 1;
+	switch (tier) {
+	case 1:
+		if (k == 3) {
+			equip(all_equipments[k + main_mag]);
+		}
+		else {
+			equip(all_equipments[k]);
+		}
+		break;
+		//2nd-tier
+	case 2:
 		k = d(3) - 1;
 		if (k == 3) {
 			equip(all_equipments[k + main_mag + 5]);
@@ -68,9 +90,9 @@ Blob::Blob(std::string const &name, int const& nlvl, std::vector<Equipment*> &al
 		else {
 			equip(all_equipments[k + 5]);
 		}
-	}
-	//1st tier
-	if (nlvl >= 8) {
+		break;
+		//1st tier
+	case 3:
 		k = d(3) - 1;
 		if (k == 3) {
 			equip(all_equipments[k + main_mag + 10]);
@@ -78,42 +100,88 @@ Blob::Blob(std::string const &name, int const& nlvl, std::vector<Equipment*> &al
 		else {
 			equip(all_equipments[k + 10]);
 		}
+		break;
 	}
 
 }
 
 
 
-std::pair<int, AttType::AttType> Blob::attack() {
-	return std::make_pair(atk, AttType::physical);
+std::pair<double, AttType::AttType> Blob::attack() {
+	if (EP > 0) {
+		EP--;
+		return std::make_pair(atk, AttType::physical);
+	}
+	else {
+		return std::make_pair(0, AttType::physical);
+	}
 }
 
 
-int Blob::defend(AttType::AttType t) {
+double Blob::defend(AttType::AttType t, bool defense_mode) {
+	//init def buff
+	int def_buff = 1;
+	if(defense_mode){
+		def_buff += COEFF_DEF;
+	}
+
+	//get some EP back
+	if (EP < MAX_EP - 3) {
+		EP += 3;
+	}
+	else {
+		EP = MAX_EP;
+	}
+
+	//get def according to attack type
 	switch (t) {
 	case AttType::red:
-		return def * magic[RED];
+		if (main_mag == AttType::green) {
+			return floor(def * (1 - COEFF_MAG) * def_buff);
+		}
+		else if (main_mag == AttType::blue) {
+			return floor(def * (1 + COEFF_MAG) * def_buff);
+		}
+		else {
+			return floor(def * (COEFF_MAG/2) * def_buff);
+		}
 		break;
 	case AttType::green:
-		return def * magic[GREEN];
+		if (main_mag == AttType::blue) {
+			return floor(def * (1 - COEFF_MAG) * def_buff);
+		}
+		else if (main_mag == AttType::red) {
+			return floor(def * (1 + COEFF_MAG) * def_buff);
+		}
+		else {
+			return floor(def * (COEFF_MAG / 2) * def_buff);
+		}
 		break;
 	case AttType::blue:
-		return def * magic[BLUE];
+		if (main_mag == AttType::green) {
+			return floor(def * (1 - COEFF_MAG) * def_buff);
+		}
+		else if (main_mag == AttType::blue) {
+			return floor(def * (1 + COEFF_MAG) * def_buff);
+		}
+		else {
+			return floor(def * (COEFF_MAG / 2) * def_buff);
+		}
 		break;
 	case AttType::physical:
-		return def * COEFF_DEF;
+		return floor(def * def_buff);
 		break;
 	}
 }
 
 
 
-int Blob::useSkill(int id) {
-	if (skills[id] && MP >= skills[id]->cost) {
-		MP -= skills[id]->cost;
-		return skills[id]->dmg * magic[skills[id]->type] * COEFF_MAG;
+std::pair<double, AttType::AttType> Blob::useSkill(int id) {
+	if (skills[id] && EP >= skills[id]->cost) {
+		EP -= skills[id]->cost;
+		return std::make_pair(skills[id]->dmg * COEFF_MAG, skills[id]->type);
 	}
-	return 0;
+	return std::make_pair(0,AttType::physical);
 }
 
 
@@ -154,11 +222,13 @@ void Blob::equip(Equipment* const &e) {
 				magic[cur_a.att] -= inventory[e->type]->buff;
 				magic[new_a.att] += e->buff;
 				inventory[e->type] = e;
+				updateMainMag();
 				exit(EXIT_SUCCESS);
 			}
 			else {
 				magic[new_a.att] += e->buff;
 				inventory[e->type] = e;
+				updateMainMag();
 				exit(EXIT_SUCCESS);
 			}
 			break;
@@ -171,10 +241,13 @@ void Blob::equip(Equipment* const &e) {
 int Blob::getHit(int const &dmg, bool defense_mode, AttType::AttType t) {
 	int cur_def = def;
 	if (defense_mode) {
-		cur_def = defend(t);
+		cur_def = defend(t, defense_mode);
 	}
 
-	if (dmg > HP + cur_def) {
+	if (dmg < cur_def) {
+		return HP;
+	}
+	else if (dmg > cur_def && dmg < HP + cur_def) {
 		HP -= dmg - cur_def;
 		return HP;
 	}
@@ -197,6 +270,7 @@ void Blob::getSkill(Skill* const &s) {
 	}
 }
 
+
 std::vector<Skill*> Blob::getKnownSkills() {
 	return skills;
 }
@@ -212,8 +286,8 @@ void Blob::lvlUP() {
 	lvl += 1;
 	atk += COEFF_LVLUP;
 	def += COEFF_LVLUP;
-	HP += COEFF_LVLUP;
-	MP += COEFF_LVLUP;
+	MAX_HP += COEFF_LVLUP;
+	MAX_EP += COEFF_LVLUP*2;
 }
 
 
@@ -223,11 +297,12 @@ void Blob::lvlUP(Blob &b) {
 	atk += COEFF_LVLUP;
 	def += COEFF_LVLUP;
 	HP += COEFF_LVLUP;
-	MP += COEFF_LVLUP;
-	int* b_mag = b.getMagic();
-	int main_magB = *std::max_element(b_mag, b_mag + 3);
-	magic[main_magB] += 2*COEFF_LVLUP;
-	int main_mag = *std::max_element(magic, magic + 3);
+	EP += COEFF_LVLUP*2;
+	MAX_HP += COEFF_LVLUP;
+	MAX_EP += COEFF_LVLUP * 2;
+	AttType::AttType b_mag = b.getMainMag();
+	magic[b_mag] += 2*COEFF_LVLUP;
+	updateMainMag();
 	color = colorSFRGB(main_mag);
 	size += 5;
 	for (auto i : b.getKnownSkills()) {
@@ -247,6 +322,25 @@ void Blob::sellCorpse(int lvladv) {
 		money += 700;
 	}
 }
+
+
+
+void Blob::updateMainMag() {
+	main_mag = AttType::AttType(*std::max_element(magic, magic + 3));
+}
+
+
+AttType::AttType Blob::getMainMag() {
+	return main_mag;
+}
+
+
+void Blob::resetStats() {
+	HP = MAX_HP;
+	EP = MAX_EP;
+}
+
+
 
 
 

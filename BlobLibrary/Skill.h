@@ -23,3 +23,7 @@ bool operator==(Skill const &s1, Skill const &s2) {
 
 
 AttType::AttType str_to_att(std::string s);
+
+
+
+// bool isEqual(Skill const &s) const;
