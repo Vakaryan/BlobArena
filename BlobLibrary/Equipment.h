@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "pugixml.hpp"
+#include "AttType.h"
 
 
 enum ItemType { armor, weapon, accessory }; //potion might be added later
@@ -17,12 +18,8 @@ public:
 	int const buff; //stat buff provided by equipment, stat depends on type
 	int const price; //item price
 	std::string const description;  //item description
-	~Equipment();
+	AttType::AttType const attribute;  //attribute of the item
 };
 
-
-bool operator==(Equipment const &e1, Equipment const &e2){
-	return (e1.origin_node == e2.origin_node);
-}
 
 ItemType str_to_type(std::string s);

@@ -1,1 +1,3 @@
-Pour skill et equipement : def isEqual ds class, et redef == hors classe (recherche dans vector dans Blob)
+Changer ptr en shared_ptr (optimisation mémoire)
+
+Pattern states (fight + vestiaire) -> la hiérarchie de classe est toujours en vie !!!

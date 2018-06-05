@@ -17,18 +17,18 @@
   	<MagicAccessory lvl="1" type="accessory" name="Ring of Wind" buff="2" price="150" attribute="blue" description="A ring that *slightly* increase wind magic"/>
 	
   	<!-- Lvl 2 equipments -->
-    <Armor lvl="2" type="armor" name="Iron Armor" buff="2" price="500" description="Now that's a real armor"/>
-    <Weapon lvl="2" type="weapon" name="Steel Sword" buff="2" price="500" description="Well balanced handle, sharpened blade: yup, that's a sword"/>
-  	<MagicAccessory lvl="2" type="accessory" name="Bracelet of Fire" buff="2" price="500" attribute="red" description="Let the fire flow through you"/>
-  	<MagicAccessory lvl="2" type="accessory" name="Bracelet of Earth" buff="2" price="500" attribute="green" description="Let the earth flow through you"/>
-  	<MagicAccessory lvl="2" type="accessory" name="Bracelet of Lightning" buff="2" price="500" attribute="blue" description="Let the lightning flow through you"/>
+    <Armor lvl="2" type="armor" name="Iron Armor" buff="4" price="500" description="Now that's a real armor"/>
+    <Weapon lvl="2" type="weapon" name="Steel Sword" buff="4" price="500" description="Well balanced handle, sharpened blade: yup, that's a sword"/>
+  	<MagicAccessory lvl="2" type="accessory" name="Bracelet of Fire" buff="4" price="500" attribute="red" description="Let the fire flow through you"/>
+  	<MagicAccessory lvl="2" type="accessory" name="Bracelet of Earth" buff="4" price="500" attribute="green" description="Let the earth flow through you"/>
+  	<MagicAccessory lvl="2" type="accessory" name="Bracelet of Lightning" buff="4" price="500" attribute="blue" description="Let the lightning flow through you"/>
 	
 	  <!-- Lvl 3 equipments -->
-    <Armor lvl="3" type="armor" name="Mithril Armor" buff="2" price="1000" description="Daaaaaamn! That's one dope armor!"/>
-    <Weapon lvl="3" type="weapon" name="Mithril Spear" buff="2" price="1000" description="Stick'em with the pointy end"/>
-	  <MagicAccessory lvl="3" type="accessory" name="Crown of Inferno" buff="2" price="1000" attribute="red" description="Badass name, badass power, badass look - also available in green and blue"/>
-	  <MagicAccessory lvl="3" type="accessory" name="Crown of Abym" buff="2" price="1000" attribute="green" description="Badass name, badass power, badass look - also available in red and blue"/>
-	  <MagicAccessory lvl="3" type="accessory" name="Crown of Storm" buff="2" price="1000" attribute="blue" description="Badass name, badass power, badass look - also available in green and red"/>
+    <Armor lvl="3" type="armor" name="Mithril Armor" buff="6" price="1000" description="Daaaaaamn! That's one dope armor!"/>
+    <Weapon lvl="3" type="weapon" name="Mithril Spear" buff="6" price="1000" description="Stick'em with the pointy end"/>
+	<MagicAccessory lvl="3" type="accessory" name="Crown of Inferno" buff="6" price="1000" attribute="red" description="Badass name, badass power, badass look - also available in green and blue"/>
+	<MagicAccessory lvl="3" type="accessory" name="Crown of Abym" buff="6" price="1000" attribute="green" description="Badass name, badass power, badass look - also available in red and blue"/>
+	<MagicAccessory lvl="3" type="accessory" name="Crown of Storm" buff="6" price="1000" attribute="blue" description="Badass name, badass power, badass look - also available in green and red"/>
 	
   </All_equipments>
 
@@ -41,18 +41,18 @@
 	
 	  <!-- Lvl 1 skills -->
     <Skill lvl="1" type="red" name="Fireball" dmg="3" cost="2" description="Fireballs fighting is a renowned sport in some cities"/>
-	  <Skill lvl="1" type="green" name="Stone Spike" dmg="3" cost="2" description="That's a nice little blob you got here. Would be a shame if someone put a hole into it"/>
-	  <Skill lvl="1" type="red" name="Wind Arrow" dmg="3" cost="2" description="I used to be a blob gladiator like you, but then I took a wind arrow to the knee"/>
+	<Skill lvl="1" type="green" name="Stone Spike" dmg="3" cost="2" description="That's a nice little blob you got here. Would be a shame if someone put a hole into it"/>
+	<Skill lvl="1" type="blue" name="Wind Arrow" dmg="3" cost="2" description="I used to be a blob gladiator like you, but then I took a wind arrow to the knee"/>
 	
 	  <!-- Lvl 2 skills -->
     <Skill lvl="2" type="red" name="Flamethrower" dmg="6" cost="4" description="Hans...Bring ze Flammenwerfer!"/>
-	  <Skill lvl="2" type="green" name="Iron Wall" dmg="6" cost="4" description="MAKE BLOBERICA GREAT AGAIN"/>
-	  <Skill lvl="2" type="red" name="Thunderbolt" dmg="6" cost="4" description="Blobachu, use Thunderbolt!"/>
+	<Skill lvl="2" type="green" name="Iron Wall" dmg="6" cost="4" description="MAKE BLOBERICA GREAT AGAIN"/>
+	<Skill lvl="2" type="blue" name="Thunderbolt" dmg="6" cost="4" description="Blobachu, use Thunderbolt!"/>
 	
 	  <!-- Lvl 3 skills -->
     <Skill lvl="3" type="red" name="Fire Storm" dmg="9" cost="6" description="Some blob just want to watch the world burn"/>
   	<Skill lvl="3" type="green" name="Meteor Slash" dmg="9" cost="6" description="Even more powerful when shooting 'Pegasuuus Meteoooor!'"/>
-	  <Skill lvl="3" type="red" name="Lightning Beam" dmg="9" cost="6" description="It's over 9000 volts"/>
+	<Skill lvl="3" type="blue" name="Lightning Beam" dmg="9" cost="6" description="It's over 9000 volts"/>
 	
 	
   </All_skills>
