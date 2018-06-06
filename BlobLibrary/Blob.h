@@ -32,10 +32,13 @@
 
 
 class Blob {
+	friend class FightState;
+	friend class OffstageState;
 
 public : 
 	Blob(std::string const &name);  //player blob constructor 
 	Blob(std::string const &name, int const &nlvl, std::vector<Equipment*> &all_equipments, std::vector<Skill*> &all_skills);  //adv blob constructor (at first name given)
+	
 	std::pair<int, AttType::AttType> attack();  //return amount of damage done
 	double defend(AttType::AttType, bool defense_mode);  //return amount of damage countered (def x coeff)
 	std::pair<double, AttType::AttType> useSkill(int id);  //return amount of damage done by skill skills[id]
@@ -44,8 +47,10 @@ public :
 	void equip(Equipment* const &e);  //equip equipement e and adjust stats
 	int getHit(int const &dmg, bool defense_mode, AttType::AttType t);  //take dmg during fight and return amount of HP remaining (depends if definding or not)
 	void getSkill(Skill* const &s);  //add skill s to skills vector
-	void sellCorpse(int lvladv);  //get money by selling your adv corpse
+	void sellCorpse(int const lvladv);  //get money by selling your adv corpse
+	void buyEquipment(Equipment* &e);  //buy equipment from the merchant
 	void updateMainMag();  //update main magical attribute
+	
 	std::vector<Skill*> getKnownSkills() const;  //getter for skills
 	Equipment* getInventory(int id) const;  //getter for equipments, id = ARMOR, WEAPON, ACCESSORY
 	int getMagic(int id) const;  //getter for magic, id = RED, GREEN, BLUE
@@ -57,11 +62,12 @@ public :
 	sf::Color getColor() const;  //getter for color
 	float getSize() const;  //return size
 	int getMoney() const;  //getter for money
+	
 	bool isEqual(Blob const &b) const;  //used for blob comparison
 
 
 
-private :
+protected :
 	std::string const name;
 	int lvl; //level 
 	int HP;  //health points

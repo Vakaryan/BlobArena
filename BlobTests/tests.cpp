@@ -7,6 +7,7 @@
 #include "../BlobLibrary/Equipment.h"
 #include "../BlobLibrary/Skill.h"
 #include "../BlobLibrary/AttType.h"
+#include "../BlobLibrary/Merchant.h"
 
 
 #define B_HP 0
@@ -16,22 +17,6 @@
 #define B_ATK 4
 #define B_DEF 5
 #define B_LVL 6
-
-
-/*
-pugi::xml_document doc;
-pugi::xml_parse_result result = doc.load_file("database.xml");
-if (result)
-{
-	std::cout << "XML [" << source << "] parsed without errors, attr value: [" << doc.child("node").attribute("attr").value() << "]\n\n";
-}
-else
-{
-	std::cout << "XML [" << source << "] parsed with errors, attr value: [" << doc.child("node").attribute("attr").value() << "]\n";
-	std::cout << "Error description: " << result.description() << "\n";
-	std::cout << "Error offset: " << result.offset << " (error at [..." << (source + result.offset) << "]\n\n";
-}
-*/
 
 
 TEST(TestBlob, TestConstructorDef) {
@@ -384,7 +369,7 @@ TEST(TestEquipment, TestDoubleEquip) {
 	bob.equip(accessory2);
 	int cur_magic[] = { bob.getMagic(0), bob.getMagic(1), bob.getMagic(2) };
 	
-	//accessory of same type and lvl
+	//accessory of same lvl and different type
 	ASSERT_EQ(bob.getInventory(ACCESSORY), accessory2);
 	ASSERT_EQ(cur_magic[accessory1->attribute], prev_magic[accessory1->attribute] - accessory1->buff);
 	ASSERT_EQ(cur_magic[accessory2->attribute], prev_magic[accessory2->attribute] + accessory2->buff);
@@ -401,5 +386,211 @@ TEST(TestEquipment, TestDoubleEquip) {
 
 
 TEST(TestSkill, TestAddSkill) {
+	std::string s = R"(<Skill lvl="1" type="red" name="Fireball" dmg="3" cost="2" description="Fireballs fighting is a renowned sport in some cities"/>)";
+	pugi::xml_document doc;
+	doc.load_string(s.c_str());
+	pugi::xml_node node = doc.child("Skill");
+	Skill* skill = new Skill(node);
+	Blob bob{ "bob" };
 
+	bob.getSkill(skill);
+	bob.getSkill(skill);
+	int count = 0;
+	for (auto i : bob.getKnownSkills()) {
+		count += (i == skill);
+	}
+	ASSERT_EQ(count, 1);
+}
+
+
+
+
+TEST(TestMoney, TestSellCorpse) {
+	Blob bob{ "bob" };
+	bob.sellCorpse(1);
+	ASSERT_EQ(bob.getMoney(), 100);
+	int prev_money = bob.getMoney();
+
+	bob.sellCorpse(5);
+	ASSERT_EQ(bob.getMoney(), prev_money + 400);
+	prev_money = bob.getMoney();
+
+	bob.sellCorpse(8);
+	ASSERT_EQ(bob.getMoney(), prev_money + 700);
+}
+
+
+
+
+
+TEST(TestMoney, TestMerchant) {
+	pugi::xml_document doc;
+	pugi::xml_parse_result result = doc.load_file("../database.xml");
+	if (!result) {
+		std::cout << "XML parsing error" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	std::vector<Equipment*> all_eq;
+	for (auto i : doc.child("data_base").child("All_equipments").children()) {
+		all_eq.push_back(new Equipment(i));
+	}
+
+	std::string s1 = R"(<Armor lvl="3" type="armor" name="Mithril Armor" buff="6" price="1000" description="Daaaaaamn! That's one dope armor!"/>)";
+	std::string s2 = R"(<Weapon lvl="3" type="weapon" name="Mithril Spear" buff="6" price="1000" description="Stick'em with the pointy end"/>)";
+	std::string s3 = R"(<MagicAccessory lvl="3" type="accessory" name="Crown of Storm" buff="6" price="1000" attribute="blue" description="Badass name, badass power, badass look - also available in green and red"/>)";
+	pugi::xml_document doc1;
+	pugi::xml_document doc2;
+	pugi::xml_document doc3;
+	doc1.load_string(s1.c_str());
+	doc2.load_string(s2.c_str());
+	doc3.load_string(s3.c_str());
+	pugi::xml_node node1 = doc1.child("Armor");
+	pugi::xml_node node2 = doc2.child("Weapon");
+	pugi::xml_node node3 = doc3.child("MagicAccessory");
+	Equipment* e1 = new Equipment(node1);
+	Equipment* e2 = new Equipment(node2);
+	Equipment* e3 = new Equipment(node3);
+
+
+
+	Blob bob{ "bob" };
+	Merchant khajiit{ all_eq }; 
+	ASSERT_FALSE(khajiit.sellEquipment(e1, bob));
+
+	bob.sellCorpse(10);
+	bob.sellCorpse(10); 
+	bob.sellCorpse(10); 
+	bob.sellCorpse(10); 
+	bob.sellCorpse(10); //now bob has 3500G
+	
+	//buying armor
+	int coins = bob.getMoney();
+	bool r = khajiit.sellEquipment(e1, bob);
+	ASSERT_EQ(bob.getInventory(0), e1);
+	std::vector<Equipment*> wares = khajiit.getInventory();
+	int count = 0;
+	for (auto i : wares) {
+		count += (i == e1);
+	}
+	ASSERT_EQ(count, 0);
+	ASSERT_EQ(bob.getMoney(), coins - e1->price);
+	coins = bob.getMoney();
+
+	//buying weapon
+	r = khajiit.sellEquipment(e2, bob);
+	ASSERT_EQ(bob.getInventory(1), e2);
+	wares = khajiit.getInventory();
+	for (auto i : wares) {
+		count += (i == e2);
+	}
+	ASSERT_EQ(count, 0);
+	ASSERT_EQ(bob.getMoney(), coins - e2->price);
+	coins = bob.getMoney();
+
+	//buying accessory
+	r = khajiit.sellEquipment(e3, bob);
+	ASSERT_EQ(bob.getInventory(2), e3);
+	wares = khajiit.getInventory();
+	for (auto i : wares) {
+		count += (i == e3);
+	}
+	ASSERT_EQ(count, 0);
+	ASSERT_EQ(bob.getMoney(), coins - e3->price);
+	coins = bob.getMoney();
+	ASSERT_EQ(coins, 500);
+}
+
+
+
+
+
+
+TEST(TestFight, TestAtk) {
+	Blob bob{ "bob" };
+	int prev_EP = bob.getStats()[B_EP];
+	std::pair<int, AttType::AttType> bob_atk = bob.attack();
+	ASSERT_TRUE(prev_EP >= 1);
+	ASSERT_EQ(bob_atk.first, bob.getStats()[B_ATK]);
+	ASSERT_EQ(bob.getStats()[B_EP], prev_EP - 1);
+
+	bob.attack();
+	bob.attack();
+	bob.attack();
+	bob.attack();
+	bob.attack();
+	bob.attack(); //0 EP left
+	bob_atk = bob.attack();
+	ASSERT_EQ(bob_atk.first, 0);
+}
+
+
+
+TEST(TestFight, TestDef) {
+	std::string s1 = R"(<MagicAccessory lvl="1" type="accessory" name="Ring of Ember" buff="2" price="150" attribute="red" description="A ring that *slightly* increase fire magic"/>)";
+	std::string s2 = R"(<MagicAccessory lvl="1" type="accessory" name="Ring of Stone" buff="2" price="150" attribute="green" description="A ring that *slightly* increase earth magic"/>)";
+	std::string s3 = R"(<MagicAccessory lvl="1" type="accessory" name="Ring of Wind" buff="2" price="150" attribute="blue" description="A ring that *slightly* increase wind magic"/>)";
+	pugi::xml_document doc1;
+	pugi::xml_document doc2;
+	pugi::xml_document doc3;
+	doc1.load_string(s1.c_str());
+	doc2.load_string(s2.c_str());
+	doc3.load_string(s3.c_str());
+	pugi::xml_node node1 = doc1.child("MagicAccessory");
+	pugi::xml_node node2 = doc2.child("MagicAccessory");
+	pugi::xml_node node3 = doc3.child("MagicAccessory");
+	Equipment* accessory1 = new Equipment(node1);
+	Equipment* accessory2 = new Equipment(node2);
+	Equipment* accessory3 = new Equipment(node3);
+
+	Blob bob{ "bob" };
+
+	//physical type
+	double bob_def = bob.defend(AttType::physical, false);
+	ASSERT_EQ(bob_def, bob.getStats()[B_DEF]);
+	bob_def = bob.defend(AttType::physical, true);
+	ASSERT_EQ(bob_def, floor(bob.getStats()[B_DEF]*1.5));
+
+	//same type main mag
+	bob.equip(accessory1);
+	bob_def = bob.defend(AttType::red, false);
+	ASSERT_EQ(bob_def, floor(bob.getStats()[B_DEF] * (0.5 / 2)));
+	bob_def = bob.defend(AttType::red, true);
+	ASSERT_EQ(bob_def, floor(bob.getStats()[B_DEF] * (0.5 / 2) * 1.5));
+
+	//type strong against main mag
+	bob.equip(accessory2);
+	bob_def = bob.defend(AttType::red, false);
+	ASSERT_EQ(bob_def, floor(bob.getStats()[B_DEF] * (1 - COEFF_MAG)));
+	bob_def = bob.defend(AttType::red, true);
+	ASSERT_EQ(bob_def, floor(bob.getStats()[B_DEF] * (1 - COEFF_MAG) * 1.5));
+
+	//type weak against main mag
+	bob.equip(accessory3);
+	bob_def = bob.defend(AttType::red, false);
+	ASSERT_EQ(bob_def, floor(bob.getStats()[B_DEF] * (1 + COEFF_MAG)));
+	bob_def = bob.defend(AttType::red, true);
+	ASSERT_EQ(bob_def, floor(bob.getStats()[B_DEF] * (1 + COEFF_MAG) * 1.5));
+}
+
+
+
+TEST(TestFight, TestGetHit) {
+	Blob bob{ "bob" };
+
+	//not enough dmg to pass through defense - tis but a scratch
+	int hit = bob.getHit(1, false, AttType::physical);
+	ASSERT_EQ(bob.getStats()[B_HP], bob.getStats()[B_MAXHP]);
+	ASSERT_TRUE(bob.getAlive());
+
+	//enough dmg to hurt but no more - DM atk
+	hit = bob.getHit(5, false, AttType::physical);
+	std::cout << bob.getStats()[B_MAXHP] << std::endl;
+	std::cout << 5 - bob.defend(AttType::physical, false) << std::endl;
+	ASSERT_EQ(bob.getStats()[B_HP], bob.getStats()[B_MAXHP] - (5 - bob.defend(AttType::physical, false)));
+	ASSERT_TRUE(bob.getAlive());
+
+	//enough dmg to obliterate the whole arena - it's over 9000
+	hit = bob.getHit(9002, false, AttType::physical);
+	ASSERT_EQ(bob.getStats()[B_HP], 0);
+	ASSERT_FALSE(bob.getAlive());
 }

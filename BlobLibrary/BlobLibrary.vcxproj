@@ -150,6 +150,10 @@
     <ClInclude Include="Blob.h" />
     <ClInclude Include="Equipment.h" />
     <ClInclude Include="AttType.h" />
+    <ClInclude Include="FightState.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="Merchant.h" />
+    <ClInclude Include="OffstageState.h" />
     <ClInclude Include="Skill.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -158,6 +162,9 @@
     <ClCompile Include="AttType.cpp" />
     <ClCompile Include="Blob.cpp" />
     <ClCompile Include="Equipment.cpp" />
+    <ClCompile Include="FightState.cpp" />
+    <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="Merchant.cpp" />
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -33,6 +33,18 @@
     <ClInclude Include="AttType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Merchant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FightState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OffstageState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -48,6 +60,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AttType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Merchant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FightState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

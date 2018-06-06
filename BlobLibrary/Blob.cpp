@@ -130,7 +130,7 @@ std::pair<int, AttType::AttType> Blob::attack() {
 
 double Blob::defend(AttType::AttType t, bool defense_mode) {
 	//init def buff
-	int def_buff = 1;
+	float def_buff = 1;
 	if(defense_mode){
 		def_buff += COEFF_DEF;
 	}
@@ -249,12 +249,8 @@ void Blob::equip(Equipment* const &e) {
 
 
 int Blob::getHit(int const &dmg, bool defense_mode, AttType::AttType t) {
-	int cur_def = def;
-	if (defense_mode) {
-		cur_def = defend(t, defense_mode);
-	}
-
-	if (dmg < cur_def) {
+	int cur_def = defend(t, defense_mode);
+	if (dmg <= cur_def) {
 		return HP;
 	}
 	else if (dmg > cur_def && dmg < HP + cur_def) {
@@ -284,6 +280,28 @@ void Blob::getSkill(Skill* const &s) {
 }
 
 
+void Blob::sellCorpse(int lvladv) {
+	//3rd tier corpse
+	if (lvladv < 5) {
+		money += 100;
+	}
+	//2nd tier corpse
+	else if (lvladv >= 5 && lvladv < 8) {
+		money += 400;
+	}
+	//1st tier corpse
+	else {
+		money += 700;
+	}
+}
+
+
+
+void Blob::buyEquipment(Equipment* &e) {
+	money -= e->price;
+	equip(e);
+}
+
 
 void Blob::lvlUP() {
 	lvl += 1;
@@ -310,19 +328,6 @@ void Blob::lvlUP(Blob &b) {
 	size += 5;
 	for (auto i : b.getKnownSkills()) {
 		getSkill(i);
-	}
-}
-
-
-void Blob::sellCorpse(int lvladv) {
-	if (lvladv < 5) {
-		money += 100;
-	}
-	else if (lvladv >= 5 && lvladv < 8) {
-		money += 400;
-	}
-	else {
-		money += 700;
 	}
 }
 
