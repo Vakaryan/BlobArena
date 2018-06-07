@@ -2,7 +2,8 @@
 #include "GameState.h"
 
 
-GameState::GameState(Blob& player) 
-	: player(player)
+GameState::GameState(Blob& player, sf::RenderWindow* window) 
+	: player(player),
+	main_window(window)
 {
 }

@@ -29,7 +29,7 @@ Blob::Blob(std::string const &name)
 
 
 
-Blob::Blob(std::string const &name, int const& nlvl, std::vector<Equipment*> &all_equipments, std::vector<Skill*> &all_skills)
+Blob::Blob(std::string const &name, int const& nlvl, std::vector<Equipment const*> &all_equipments, std::vector<Skill const*> &all_skills)
 	: name(name),
 	lvl(nlvl),
 	alive(true),
@@ -196,7 +196,7 @@ std::pair<double, AttType::AttType> Blob::useSkill(int id) {
 
 
 
-void Blob::equip(Equipment* const &e) {
+void Blob::equip(Equipment const* e) {
 	if (e) {
 		switch (e->type) {
 		case armor:
@@ -266,7 +266,7 @@ int Blob::getHit(int const &dmg, bool defense_mode, AttType::AttType t) {
 
 
 
-void Blob::getSkill(Skill* const &s) {
+void Blob::getSkill(Skill const* s) {
 	if (skills.empty()) {
 		skills.push_back(s);
 		return;
@@ -297,7 +297,7 @@ void Blob::sellCorpse(int lvladv) {
 
 
 
-void Blob::buyEquipment(Equipment* &e) {
+void Blob::buyEquipment(Equipment const* e) {
 	money -= e->price;
 	equip(e);
 }
@@ -350,12 +350,12 @@ void Blob::updateMainMag() {
 
 
 
-std::vector<Skill*> Blob::getKnownSkills() const {
+std::vector<Skill const*> Blob::getKnownSkills() const {
 	return skills;
 }
 
 
-Equipment* Blob::getInventory(int id) const {
+Equipment const* Blob::getInventory(int id) const {
 	assert(id == 0 || id == 1 || id == 2);
 	return inventory[id];
 }
@@ -382,12 +382,14 @@ std::vector<int> Blob::getStats() const {
 	return std::vector<int>({ HP, MAX_HP, EP, MAX_EP, atk, def, lvl });
 }
 
+
+
 std::string Blob::getName() const {
 	return name;
 }
 
 
-bool Blob::getAlive() const {
+bool Blob::isAlive() const {
 	return alive;
 }
 
