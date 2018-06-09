@@ -152,6 +152,9 @@
     <ClInclude Include="AttType.h" />
     <ClInclude Include="FightState.h" />
     <ClInclude Include="GameState.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="MenuFight.h" />
+    <ClInclude Include="MenuSpell.h" />
     <ClInclude Include="Merchant.h" />
     <ClInclude Include="OffstageState.h" />
     <ClInclude Include="Skill.h" />
@@ -164,6 +167,9 @@
     <ClCompile Include="Equipment.cpp" />
     <ClCompile Include="FightState.cpp" />
     <ClCompile Include="GameState.cpp" />
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="MenuFight.cpp" />
+    <ClCompile Include="MenuSpell.cpp" />
     <ClCompile Include="Merchant.cpp" />
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="stdafx.cpp">

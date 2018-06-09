@@ -119,7 +119,7 @@ Blob::Blob(std::string const &name, int const& nlvl, std::vector<Equipment const
 
 std::pair<int, AttType::AttType> Blob::attack() {
 	if (EP > 0) {
-		EP--;
+		EP-=1;
 		return std::make_pair(atk, AttType::physical);
 	}
 	else {
@@ -128,20 +128,22 @@ std::pair<int, AttType::AttType> Blob::attack() {
 }
 
 
+
+
 double Blob::defend(AttType::AttType t, bool defense_mode) {
 	//init def buff
 	float def_buff = 1;
 	if(defense_mode){
-		def_buff += COEFF_DEF;
+		def_buff = 1 + COEFF_DEF;
+		//get some EP back
+		if (EP < MAX_EP - 3) {
+			EP += 3;
+		}
+		else {
+			EP = MAX_EP;
+		}
 	}
 
-	//get some EP back
-	if (EP < MAX_EP - 3) {
-		EP += 3;
-	}
-	else {
-		EP = MAX_EP;
-	}
 
 	//get def according to attack type
 	switch (t) {
@@ -189,9 +191,15 @@ double Blob::defend(AttType::AttType t, bool defense_mode) {
 std::pair<double, AttType::AttType> Blob::useSkill(int id) {
 	if (skills[id] && EP >= skills[id]->cost) {
 		EP -= skills[id]->cost;
-		return std::make_pair(skills[id]->dmg * COEFF_MAG, skills[id]->type);
+		float buff_coeff = 1;
+		if (skills[id]->type == main_mag) {
+			buff_coeff += COEFF_MAG;
+		}
+		return std::make_pair(skills[id]->dmg * buff_coeff, skills[id]->type);
 	}
-	return std::make_pair(0,AttType::physical);
+	else {
+		return std::make_pair(0, AttType::physical);
+	}
 }
 
 

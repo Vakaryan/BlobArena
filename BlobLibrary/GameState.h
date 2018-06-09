@@ -6,6 +6,8 @@
 #include "AttType.h"
 #include <string>
 #include <vector>
+#include <Windows.h>
+#include <iostream>
 
 
 

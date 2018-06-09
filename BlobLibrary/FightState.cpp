@@ -9,59 +9,103 @@ FightState::FightState(Blob& player, int &roundNo, std::string const &name, std:
 	wonOrLost(false),
 	all_eq(all_equipments),
 	all_sk(all_skills),
-	name(name)
+	name(name),
+	endFight(false)
 {
 }
 
 
 
-
-std::pair<PlayerAction, int> FightState::inputManager(sf::RenderWindow* &window) {
+void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpell menuS, int idMenu, Blob &adv) {
 	sf::Event event;
 	std::cout << "What do you want to do?" << std::endl;
-	std::cout << "1 - Attack" << std::endl;
-	std::cout << "2 - Defend" << std::endl;
 	
-	while (window->pollEvent(event)) {
+	while (1) {
 
-		//Attack
-		if (event.key.code == sf::Keyboard::Num1) {
-			std::cout << "What do you want to do?" << std::endl;
-			std::cout << "1 - Physical Attack" << std::endl;
-			std::cout << "2 - Use Skill" << std::endl;
-			//Physical attack
-			if (event.key.code == sf::Keyboard::Num1) {
-				return std::make_pair(attack, -1);
-			}
-			//Use spell
-			//No known skills, try again
-			if (player.getKnownSkills().size() == 0) {
-				std::cout << "You don't know any skill. Git gud." << std::endl;
-				return inputManager(window);
-			}
-			//Return <spell, spell id in Blob.skills<
-			if (event.key.code == sf::Keyboard::Num1) {
-				int k = 0;
-				for (auto i : player.getKnownSkills()) {
-					std::cout << k << " - " << player.getKnownSkills()[k]->name << std::endl;
-					k++;
-				}
-				for (int i = 0; i < player.getKnownSkills().size(); i++) {
-					if (event.type == sf::Event::TextEntered) {
-						if (event.text.unicode == 48 + i) {
-							return std::make_pair(spell, i);
+		if (endFight) {
+			wonOrLost = player.isAlive();
+			break;
+		}
+
+
+		sf::Event event;
+		while (window->pollEvent(event)) {
+			switch (event.type) {
+			
+			case sf::Event::Closed:
+				window->close();
+				break;
+
+
+			case sf::Event::KeyPressed:
+				
+				
+			switch (event.key.code) {
+			
+			case sf::Keyboard::Up:
+					if (idMenu) {
+						menuF.moveUP();
+					}
+					else {
+						menuS.moveUP();
+					}
+					break;
+
+			
+			case sf::Keyboard::Down:
+					if (idMenu) {
+						menuF.moveDOWN();
+					}
+					else {
+						menuS.moveDOWN();
+					}
+					break;
+
+
+				case::sf::Keyboard::Return:
+
+					//MenuFight
+					if (idMenu) {  
+						switch (menuF.getPressedItem()) {
+						case 0:
+							std::cout << "Attack" << std::endl;
+							turn(std::make_pair(attack, -1), adv);
+							break;
+						case 1:
+							std::cout << "Defend" << std::endl;
+							turn(std::make_pair(defense, -1), adv);
+							break;
+						case 2:
+							std::cout << "Use spell" << std::endl;
+							inputManager(window, menuF, menuS, 0, adv);
+							break;
 						}
 					}
-				}
 
+					//MenuSpell
+					else {
+						if (menuS.getPressedItem() < menuS.item_number - 1) {
+							std::cout << "Use spell" << adv.getKnownSkills()[menuS.getPressedItem()]->name << std::endl;
+							turn(std::make_pair(spell, menuS.getPressedItem()), adv);
+						}
+						else { //return button
+							inputManager(window, menuF, menuS, 1, adv);
+						}
+					}
+					break;
+				}
 			}
 		}
 
-		//Defense
-		if (event.key.code == sf::Keyboard::Num2) {
-			return std::make_pair(defense, -1);
-		}
+		window->clear();
 
+		if (idMenu) {
+			menuF.draw(*window);
+		}
+		else {
+			menuS.draw(*window);
+		}
+		window->display();
 	}
 }
 
@@ -87,7 +131,7 @@ std::pair<PlayerAction, int> FightState::getAdvAction(Blob &b) {
 	//EP == MAX EP -> either attack or use random spell (50/50)
 	else if(b.getStats()[B_EP] == b.getStats()[B_MAXEP]) {
 		int dice = d(2) - 1;
-		if (dice) {
+		if (dice && b.getKnownSkills().size()<0) {
 			return std::make_pair(spell, d(b.getKnownSkills().size()) - 1);
 		}
 		else {
@@ -148,7 +192,7 @@ std::pair<PlayerAction, int> FightState::getAdvAction(Blob &b) {
 
 
 
-bool FightState::turn(std::pair<PlayerAction, int> player_action, Blob &adv) {
+void FightState::turn(std::pair<PlayerAction, int> player_action, Blob &adv) {
 	std::pair<PlayerAction, int> adv_action = getAdvAction(adv);
 	switch (player_action.first) {
 	
@@ -156,16 +200,44 @@ bool FightState::turn(std::pair<PlayerAction, int> player_action, Blob &adv) {
 	case defense:
 		//Adv attacks
 		if (adv_action.first == attack) {
-			player.getHit(adv.attack().first, true, AttType::physical);
+			std::pair<int, AttType::AttType> adv_act = adv.attack();
+			player.getHit(adv_act.first, true, AttType::physical);
+
+			std::cout << "Player defends" << std::endl;
+			std::cout << "Adv attacks" << std::endl;
+			std::cout << "Player has " << player.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Player has " << player.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << " " << std::endl;
+
 		}
+
 		//Adv uses spell
 		else if (adv_action.first == spell) {
-			player.getHit(adv.useSkill(adv_action.second).first, true, adv.useSkill(adv_action.second).second);
+			std::pair<double, AttType::AttType> adv_act = adv.useSkill(adv_action.second);
+			player.getHit(adv_act.first, true, adv_act.second);
+
+			std::cout << "Player defends" << std::endl;
+			std::cout << "Adv uses spell : " << adv.getKnownSkills()[adv_action.second]->name << std::endl;
+			std::cout << "Player has " << player.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Player has " << player.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << " " << std::endl;
 		}
 		//Adv defends
 		else {
 			player.getHit(0, true, AttType::physical);
 			adv.getHit(0, true, AttType::physical);
+
+			std::cout << "Player defends" << std::endl;
+			std::cout << "Adv defends" << std::endl;
+			std::cout << "Player has " << player.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Player has " << player.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << " " << std::endl;
 		}
 		break;
 
@@ -174,17 +246,46 @@ bool FightState::turn(std::pair<PlayerAction, int> player_action, Blob &adv) {
 	case attack:
 		//Adv attacks
 		if (adv_action.first == attack) {
-			player.getHit(adv.attack().first, false, AttType::physical);
-			adv.getHit(player.attack().first, false, AttType::physical);
+			std::pair<int, AttType::AttType> plyr_act = player.attack();
+			std::pair<int, AttType::AttType> adv_act = adv.attack();
+			player.getHit(adv_act.first, false, AttType::physical);
+			adv.getHit(plyr_act.first, false, AttType::physical);
+
+			std::cout << "Player attacks" << std::endl;
+			std::cout << "Adv attacks" << std::endl;
+			std::cout << "Player has " << player.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Player has " << player.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << " " << std::endl;
 		}
 		//Adv uses spell
 		else if (adv_action.first == spell) {
-			player.getHit(adv.useSkill(adv_action.second).first, false, adv.useSkill(adv_action.second).second);
-			adv.getHit(player.attack().first, false, AttType::physical);
+			std::pair<double, AttType::AttType> adv_act = adv.useSkill(adv_action.second);
+			std::pair<int, AttType::AttType> plyr_act = player.attack();
+			player.getHit(adv_act.first, false, adv_act.second);
+			adv.getHit(plyr_act.first, false, AttType::physical);
+
+			std::cout << "Player attacks" << std::endl;
+			std::cout << "Adv uses spell : " << adv.getKnownSkills()[adv_action.second]->name << std::endl;
+			std::cout << "Player has " << player.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Player has " << player.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << " " << std::endl;
 		}
 		//Adv defends
 		else {
-			adv.getHit(player.attack().first, true, AttType::physical);
+			std::pair<int, AttType::AttType> plyr_act = player.attack();
+			adv.getHit(plyr_act.first, true, AttType::physical);
+
+			std::cout << "Player attacks" << std::endl;
+			std::cout << "Adv defends" << std::endl;
+			std::cout << "Player has " << player.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Player has " << player.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << " " << std::endl;
 		}
 		break;
 
@@ -193,21 +294,51 @@ bool FightState::turn(std::pair<PlayerAction, int> player_action, Blob &adv) {
 	case spell:
 		//Adv attacks
 		if (adv_action.first == attack) {
-			player.getHit(adv.attack().first, false, AttType::physical);
-			adv.getHit(player.useSkill(player_action.second).first, false, player.useSkill(adv_action.second).second);
+			std::pair<int, AttType::AttType> adv_act = adv.attack();
+			std::pair<double, AttType::AttType> plyr_act = player.useSkill(player_action.second);
+			player.getHit(adv_act.first, false, AttType::physical);
+			adv.getHit(plyr_act.first, false, plyr_act.second);
+
+			std::cout << "Player uses spell : " << player.getKnownSkills()[player_action.second]->name << std::endl;
+			std::cout << "Adv attacks" << std::endl;
+			std::cout << "Player has " << player.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Player has " << player.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << " " << std::endl;
 		}
 		//Adv uses spell
 		else if (adv_action.first == spell) {
-			player.getHit(adv.useSkill(adv_action.second).first, false, adv.useSkill(adv_action.second).second);
-			adv.getHit(player.useSkill(player_action.second).first, false, player.useSkill(adv_action.second).second);
+			std::pair<int, AttType::AttType> adv_act = adv.useSkill(adv_action.second);
+			std::pair<double, AttType::AttType> plyr_act = player.useSkill(player_action.second);
+			player.getHit(adv_act.first, false, adv_act.second);
+			adv.getHit(plyr_act.first, false, plyr_act.second);
+
+			std::cout << "Player uses spell : " << player.getKnownSkills()[player_action.second]->name << std::endl;
+			std::cout << "Adv uses spell : " << adv.getKnownSkills()[adv_action.second]->name << std::endl;
+			std::cout << "Player has " << player.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Player has " << player.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << " " << std::endl;
 		}
 		//Adv defends
 		else {
-			adv.getHit(player.useSkill(player_action.second).first, true, player.useSkill(adv_action.second).second);
+			std::pair<double, AttType::AttType> plyr_act = player.useSkill(player_action.second);
+			adv.getHit(plyr_act.first, true, plyr_act.second);
+
+			std::cout << "Player uses spell : " << player.getKnownSkills()[player_action.second]->name << std::endl;
+			std::cout << "Adv defends" << std::endl;
+			std::cout << "Player has " << player.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_HP] << " HP remaining" << std::endl;
+			std::cout << "Player has " << player.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << "Adv has " << adv.getStats()[B_EP] << " EP remaining" << std::endl;
+			std::cout << " " << std::endl;
 		}
 		break;
 	}
-	return (player.isAlive() && adv.isAlive());
+
+	endFight = !(player.isAlive() && adv.isAlive());
 }
 
 
@@ -219,15 +350,18 @@ bool FightState::turn(std::pair<PlayerAction, int> player_action, Blob &adv) {
 
 void FightState::loop() {
 	Blob adv{ name, roundNo, all_eq, all_sk };
-	while (turn(inputManager(main_window), adv)) {
-	}
-	wonOrLost = player.isAlive();
+	MenuFight menuF{ (float)main_window->getSize().x, (float)main_window->getSize().y };
+	MenuSpell menuS{ (float)main_window->getSize().x, (float)main_window->getSize().y, player };
+	inputManager(main_window, menuF, menuS, 1, adv);
 }
 
 
 
 
-
-bool FightState::getFightResult() {
+bool FightState::isWon() {
 	return wonOrLost;
+}
+
+bool FightState::isFinished() {
+	return endFight;
 }
