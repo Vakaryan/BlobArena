@@ -85,7 +85,7 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 					//MenuSpell
 					else {
 						if (menuS.getPressedItem() < menuS.item_number - 1) {
-							std::cout << "Use spell" << adv.getKnownSkills()[menuS.getPressedItem()]->name << std::endl;
+							std::cout << "Use spell" << std::endl;
 							turn(std::make_pair(spell, menuS.getPressedItem()), adv);
 						}
 						else { //return button
@@ -105,6 +105,7 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 		else {
 			menuS.draw(*window);
 		}
+		drawArena(main_window, player, adv);
 		window->display();
 	}
 }
@@ -350,8 +351,10 @@ void FightState::turn(std::pair<PlayerAction, int> player_action, Blob &adv) {
 
 void FightState::loop() {
 	Blob adv{ name, roundNo, all_eq, all_sk };
-	MenuFight menuF{ (float)main_window->getSize().x, (float)main_window->getSize().y };
-	MenuSpell menuS{ (float)main_window->getSize().x, (float)main_window->getSize().y, player };
+	//sf::Vector2f origin(main_window->getSize().x - 300, main_window->getSize().y - 300);
+	sf::Vector2f origin(0, 0);
+	MenuFight menuF( main_window->getSize().x, 300, origin);
+	MenuSpell menuS{ 300, 300, player };
 	inputManager(main_window, menuF, menuS, 1, adv);
 }
 
@@ -364,4 +367,25 @@ bool FightState::isWon() {
 
 bool FightState::isFinished() {
 	return endFight;
+}
+
+
+
+void FightState::drawArena(sf::RenderWindow* window, Blob &plyr, Blob &adv) {
+	sf::Vector2f originL(0, 10);
+	sf::Vector2f originR(window->getSize().x - 200, 10);
+	sf::Vector2f size(200, window->getSize().y - 300);
+	sf::RectangleShape pillarL;
+	sf::RectangleShape pillarR;
+	pillarL.setPosition(originL);
+	pillarL.setSize(size);
+	pillarL.setFillColor(sf::Color::White);
+	pillarR.setPosition(originR);
+	pillarR.setSize(size);
+	pillarR.setFillColor(sf::Color::White);
+	window->draw(pillarL);
+	window->draw(pillarR);
+
+	player.draw(main_window, main_window->getSize().x * 3 / 10 - player.getSize(), main_window->getSize().y * 1 / 2 - player.getSize());
+	adv.draw(main_window, main_window->getSize().x * 7 / 10 - player.getSize(), main_window->getSize().y * 1 / 2 - player.getSize());
 }

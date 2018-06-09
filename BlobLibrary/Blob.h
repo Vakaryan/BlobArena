@@ -23,9 +23,9 @@
 #define WEAPON 1
 #define ACCESSORY 2
 //basic values for lvl1 blob (may change when balancing)
-#define BASE_ATK 3
-#define BASE_DEF 1
-#define BASE_HP 5
+#define BASE_ATK 4
+#define BASE_DEF 2
+#define BASE_HP 7
 #define BASE_EP 7
 #define BASE_MAG 2
 #define BASE_SIZE 100
@@ -64,6 +64,7 @@ public :
 	int getMoney() const;  //getter for money
 	
 	bool isEqual(Blob const &b) const;  //used for blob comparison
+	void draw(sf::RenderWindow* window, float x, float y);  //used to draw blob 
 
 
 

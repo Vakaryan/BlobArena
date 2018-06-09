@@ -26,6 +26,7 @@ public:
 	void inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpell menuS, int IdMenu, Blob &adv);  //returns type of attack and number of spell (if spell), -1 if other 
 	//idMenu = 1 -> menufight, idMenu = 0 -> menuSpell
 	bool isFinished(); //getter for endFight
+	void drawArena(sf::RenderWindow* window, Blob &plyr, Blob &adv);  //draws the arena
 
 protected:
 	int roundNo;  //number of the round 

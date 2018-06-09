@@ -21,7 +21,7 @@
 
 TEST(TestBlob, TestConstructorDef) {
 	Blob bob{ "bob" };
-	std::vector<int> exp_stats({ 5,5,7,7,3,1,1 });
+	std::vector<int> exp_stats({ BASE_HP,BASE_HP,BASE_EP,BASE_EP,BASE_ATK,BASE_DEF,1 });
 	int exp_magic[] = { 2,2,2 };
 	EXPECT_EQ("bob", bob.getName());
 	EXPECT_EQ(bob.getStats(), exp_stats);

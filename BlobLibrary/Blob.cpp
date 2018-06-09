@@ -51,7 +51,7 @@ Blob::Blob(std::string const &name, int const& nlvl, std::vector<Equipment const
 		updateMainMag();
 	}
 	color = colorSFRGB(main_mag);
-	size = 50 + (nlvl - 1) * COEFF_LVLUP;
+	size = 50 + (nlvl - 1) * 20;
 
 
 	int tier;
@@ -130,6 +130,7 @@ std::pair<int, AttType::AttType> Blob::attack() {
 
 
 
+
 double Blob::defend(AttType::AttType t, bool defense_mode) {
 	//init def buff
 	float def_buff = 1;
@@ -143,7 +144,6 @@ double Blob::defend(AttType::AttType t, bool defense_mode) {
 			EP = MAX_EP;
 		}
 	}
-
 
 	//get def according to attack type
 	switch (t) {
@@ -262,7 +262,7 @@ int Blob::getHit(int const &dmg, bool defense_mode, AttType::AttType t) {
 		return HP;
 	}
 	else if (dmg > cur_def && dmg < HP + cur_def) {
-		HP -= dmg - cur_def;
+		HP -= (dmg - cur_def);
 		return HP;
 	}
 	else {
@@ -429,6 +429,15 @@ bool Blob::isEqual(Blob const &b) const{
 }
 
 
+
+
+void Blob::draw(sf::RenderWindow* window, float x, float y) {
+	sf::CircleShape circle;
+	circle.setFillColor(color);
+	circle.setRadius(size);
+	circle.setPosition(x, y);
+	window->draw(circle);
+}
 
 
 

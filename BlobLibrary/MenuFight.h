@@ -3,5 +3,5 @@
 
 class MenuFight : public Menu {
 public:
-	MenuFight(float width, float height);
+	MenuFight(float width, float height, sf::Vector2f &origin);
 };
