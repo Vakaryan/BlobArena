@@ -74,10 +74,14 @@ Blob::Blob(std::string const &name, int const& nlvl, std::vector<Equipment const
 		exception may occure when 2nd-tier and 1st-tier blobs get lvl2-lvl3 equipments of same type as the previous ones
 		*/
 		//3rd-tier
-		int t = d(3) - 1;
 		switch (tier) {
+			int t;
+			int t1;
+			int t2; 
+			int t3;
 		case 3:
-			if (t == 3) {
+			t = d(3) - 1;
+			if (t == 2) {
 				equip(all_equipments[t + main_mag]);
 			}
 			else {
@@ -87,25 +91,31 @@ Blob::Blob(std::string const &name, int const& nlvl, std::vector<Equipment const
 			break;
 			//2nd-tier
 		case 2:
-			t = d(3) - 1;
-			if (t == 3) {
-				equip(all_equipments[t + main_mag + 5]);
+			t1 = d(3) - 1;
+			t2 = d(5) - 1;
+			if (t1 == 2) {
+				equip(all_equipments[t1 + main_mag + 5]);
 			}
 			else {
-				equip(all_equipments[t + 5]);
+				equip(all_equipments[t1 + 5]);
 			}
+			equip(all_equipments[t2]);
 			getSkill(all_skills[main_mag + 3]);
 			getSkill(all_skills[d(3) - 1]);
 			break;
 			//1st tier
 		case 1:
-			t = d(3) - 1;
-			if (t == 3) {
-				equip(all_equipments[t + main_mag + 10]);
+			t1 = d(3) - 1;
+			t2 = d(5) - 1;
+			t3 = d(5) - 1;
+			if (t1 == 2) {
+				equip(all_equipments[t1 + main_mag + 10]);
 			}
 			else {
-				equip(all_equipments[t + 10]);
+				equip(all_equipments[t1 + 10]);
 			}
+			equip(all_equipments[t2 + 5]);
+			equip(all_equipments[t3]);
 			getSkill(all_skills[main_mag + 6]);
 			getSkill(all_skills[d(3) - 1 + 3]);
 			getSkill(all_skills[d(3) - 1]);
@@ -294,18 +304,21 @@ void Blob::getSkill(Skill const* s) {
 
 
 // ------- Sell adversary method -------- //
-void Blob::sellCorpse(int lvladv) {
+int Blob::sellCorpse(int lvladv) {
 	//3rd tier corpse
 	if (lvladv < 5) {
-		money += 100;
+		money += 200;
+		return 200;
 	}
 	//2nd tier corpse
 	else if (lvladv >= 5 && lvladv < 8) {
-		money += 400;
+		money += 550;
+		return 550;
 	}
 	//1st tier corpse
 	else {
-		money += 700;
+		money += 850;
+		return 850;
 	}
 }
 
@@ -336,8 +349,11 @@ void Blob::lvlUP() {
 // ------- Lvl up by eating method -------- //
 void Blob::lvlUP(Blob &b) {
 	lvlUP();
+	lvlUP();
+	lvl--;  
+	//you win 1 level but get twice the stats buff compared to an opponent (to be fair because your opponent lvl up and get equipments)
 	AttType::AttType b_mag = b.getMainMag();
-	magic[b_mag] += 2*COEFF_LVLUP;
+	magic[b_mag] += 3*COEFF_LVLUP;
 	updateMainMag();
 	color = colorSFRGB(main_mag);
 	size += 5;
@@ -360,6 +376,7 @@ void Blob::updateMainMag() {
 		}
 	}
 	main_mag = AttType::AttType(id);
+	color = colorSFRGB(main_mag);
 }
 
 
@@ -460,7 +477,7 @@ void Blob::drawStats(sf::RenderWindow* window, TextBox &tb) {
 	}
 	sstatus += "\n";
 	sstatus += "Skills :\n";
-	if (skills.size() < 0) {
+	if (skills.size() > 0) {
 		for (auto &i : skills) {
 			if (i != nullptr) {
 				sstatus += i->name + "\n";

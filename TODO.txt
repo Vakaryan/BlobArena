@@ -2,3 +2,4 @@ Changer ptr en shared_ptr (optimisation mémoire)
 Commenter code / titrer
 Remplacer auto i fair auto &i
 Dear ImGui
+Getter renvoyant &

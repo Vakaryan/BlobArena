@@ -153,6 +153,7 @@
     <ClInclude Include="FightState.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="MenuEndFight.h" />
     <ClInclude Include="MenuFight.h" />
     <ClInclude Include="MenuSpell.h" />
     <ClInclude Include="Merchant.h" />
@@ -169,6 +170,7 @@
     <ClCompile Include="FightState.cpp" />
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="MenuEndFight.cpp" />
     <ClCompile Include="MenuFight.cpp" />
     <ClCompile Include="MenuSpell.cpp" />
     <ClCompile Include="Merchant.cpp" />

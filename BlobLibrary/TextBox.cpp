@@ -15,7 +15,7 @@ void TextBox::draw(sf::RenderWindow &window, std::string &str, int charac_size) 
 		std::cout << "Font loading error" << std::endl;
 	}
 	text.setFont(font);
-	text.setFillColor(sf::Color::Red);
+	text.setFillColor(sf::Color::Magenta);
 	text.setString(str);
 	text.setCharacterSize(charac_size);
 	text.setPosition(width / 10 + position.x, height / 5 + position.y);

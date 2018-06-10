@@ -48,7 +48,7 @@ public :
 	void equip(Equipment const* e);  //equip equipement e and adjust stats
 	int getHit(int const &dmg, bool defense_mode, AttType::AttType t);  //take dmg during fight and return amount of HP remaining (depends if definding or not)
 	void getSkill(Skill const* s);  //add skill s to skills vector
-	void sellCorpse(int const lvladv);  //get money by selling your adv corpse
+	int sellCorpse(int const lvladv);  //get money by selling your adv corpse and returns amount earned
 	void buyEquipment(Equipment const* e);  //buy equipment from the merchant
 	void updateMainMag();  //update main magical attribute
 	

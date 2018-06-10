@@ -3,6 +3,7 @@
 #include <iostream>
 #include "MenuFight.h"
 #include "MenuSpell.h"
+#include "MenuEndFight.h"
 
 
 #define B_HP 0
@@ -24,7 +25,7 @@ public:
 	bool isWon();  //getter for wonOrLost
 	std::pair<PlayerAction, int> getAdvAction(Blob &b);   //"AI" action
 	void inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpell menuS, int IdMenu, Blob &adv, TextBox &tb);  //returns type of attack and number of spell (if spell), -1 if other 
-	//idMenu = 1 -> menufight, idMenu = 0 -> menuSpell
+	//idMenu = 1 -> menufight, idMenu = 2 -> menuSpell, idMenu = 3 -> menuEndFight
 	bool isFinished(); //getter for endFight
 	void drawArena(sf::RenderWindow* window, Blob &plyr, Blob &adv);  //draws the arena
 

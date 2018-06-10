@@ -96,8 +96,6 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 
 		window->clear();
 
-		tb.draw(*main_window, smain, 24);
-
 		if (idMenu) {
 			menuF.draw(*window);
 		}
@@ -108,8 +106,19 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 
 		if (endFight) {
 			wonOrLost = player.isAlive();
+			if (wonOrLost) {
+				smain = "Fight won";
+			}
+			else {
+				smain = "Fight lost";
+			}
+			tb.draw(*main_window, smain, 24);
+			window->display();
 			break;
 		}
+
+		tb.draw(*main_window, smain, 24);
+
 		window->display();
 
 	}
@@ -334,7 +343,7 @@ std::string FightState::turn(std::pair<PlayerAction, int> player_action, Blob &a
 			player.getHit(adv_act.first, false, AttType::physical);
 			adv.getHit(plyr_act.first, false, plyr_act.second);
 
-			splyr += " use spell " + player.getKnownSkills()[adv_action.second]->name + "\n";
+			splyr += " use spell " + player.getKnownSkills()[player_action.second]->name + "\n";
 			sadv += " attacks\n";
 			sturn += splyr + sadv;
 
@@ -353,7 +362,7 @@ std::string FightState::turn(std::pair<PlayerAction, int> player_action, Blob &a
 			player.getHit(adv_act.first, false, adv_act.second);
 			adv.getHit(plyr_act.first, false, plyr_act.second);
 
-			splyr += " use spell " + player.getKnownSkills()[adv_action.second]->name + "\n";
+			splyr += " use spell " + player.getKnownSkills()[player_action.second]->name + "\n";
 			sadv += " use spell " + adv.getKnownSkills()[adv_action.second]->name + "\n";
 			sturn += splyr + sadv;
 
@@ -370,7 +379,7 @@ std::string FightState::turn(std::pair<PlayerAction, int> player_action, Blob &a
 			std::pair<double, AttType::AttType> plyr_act = player.useSkill(player_action.second);
 			adv.getHit(plyr_act.first, true, plyr_act.second);
 
-			splyr += " use spell " + player.getKnownSkills()[adv_action.second]->name + "\n";
+			splyr += " use spell " + player.getKnownSkills()[player_action.second]->name + "\n";
 			sadv += " defends\n";
 			sturn += splyr + sadv;
 
