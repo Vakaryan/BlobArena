@@ -4,6 +4,8 @@
 #include "Equipment.h"
 #include "Skill.h"
 #include "AttType.h"
+#include "Menu.h"
+#include "TextBox.h"
 #include <string>
 #include <vector>
 #include <Windows.h>

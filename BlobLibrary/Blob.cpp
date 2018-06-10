@@ -5,7 +5,7 @@
 
 
 
-
+// ------- Basic constructor -------- //
 Blob::Blob(std::string const &name)
 	: name(name),
 	lvl(1),
@@ -28,7 +28,7 @@ Blob::Blob(std::string const &name)
 
 
 
-
+// ------- Constructor by level -------- //
 Blob::Blob(std::string const &name, int const& nlvl, std::vector<Equipment const*> &all_equipments, std::vector<Skill const*> &all_skills)
 	: name(name),
 	lvl(nlvl),
@@ -116,7 +116,7 @@ Blob::Blob(std::string const &name, int const& nlvl, std::vector<Equipment const
 
 
 
-
+// ------- Attack method -------- //
 std::pair<int, AttType::AttType> Blob::attack() {
 	if (EP > 0) {
 		EP-=1;
@@ -130,7 +130,7 @@ std::pair<int, AttType::AttType> Blob::attack() {
 
 
 
-
+// ------- Defense method -------- //
 double Blob::defend(AttType::AttType t, bool defense_mode) {
 	//init def buff
 	float def_buff = 1;
@@ -188,6 +188,7 @@ double Blob::defend(AttType::AttType t, bool defense_mode) {
 
 
 
+// ------- Use skill method -------- //
 std::pair<double, AttType::AttType> Blob::useSkill(int id) {
 	if (skills[id] && EP >= skills[id]->cost) {
 		EP -= skills[id]->cost;
@@ -204,6 +205,7 @@ std::pair<double, AttType::AttType> Blob::useSkill(int id) {
 
 
 
+// ------- Equip something method -------- //
 void Blob::equip(Equipment const* e) {
 	if (e) {
 		switch (e->type) {
@@ -256,6 +258,7 @@ void Blob::equip(Equipment const* e) {
 
 
 
+// ------- Get hit method -------- //
 int Blob::getHit(int const &dmg, bool defense_mode, AttType::AttType t) {
 	int cur_def = defend(t, defense_mode);
 	if (dmg <= cur_def) {
@@ -274,6 +277,7 @@ int Blob::getHit(int const &dmg, bool defense_mode, AttType::AttType t) {
 
 
 
+// ------- Get a new skill method -------- //
 void Blob::getSkill(Skill const* s) {
 	if (skills.empty()) {
 		skills.push_back(s);
@@ -288,6 +292,8 @@ void Blob::getSkill(Skill const* s) {
 }
 
 
+
+// ------- Sell adversary method -------- //
 void Blob::sellCorpse(int lvladv) {
 	//3rd tier corpse
 	if (lvladv < 5) {
@@ -305,30 +311,31 @@ void Blob::sellCorpse(int lvladv) {
 
 
 
+// ------- Buy an equipment method -------- //
 void Blob::buyEquipment(Equipment const* e) {
 	money -= e->price;
 	equip(e);
 }
 
 
+
+// ------- Basic lvl up method -------- //
 void Blob::lvlUP() {
 	lvl += 1;
 	atk += COEFF_LVLUP;
 	def += COEFF_LVLUP;
+	HP += COEFF_LVLUP;
+	EP += COEFF_LVLUP * 2;
 	MAX_HP += COEFF_LVLUP;
 	MAX_EP += COEFF_LVLUP*2;
 }
 
 
 
+
+// ------- Lvl up by eating method -------- //
 void Blob::lvlUP(Blob &b) {
-	lvl += 1;
-	atk += COEFF_LVLUP;
-	def += COEFF_LVLUP;
-	HP += COEFF_LVLUP;
-	EP += COEFF_LVLUP *2;
-	MAX_HP += COEFF_LVLUP;
-	MAX_EP += COEFF_LVLUP * 2;
+	lvlUP();
 	AttType::AttType b_mag = b.getMainMag();
 	magic[b_mag] += 2*COEFF_LVLUP;
 	updateMainMag();
@@ -341,6 +348,7 @@ void Blob::lvlUP(Blob &b) {
 
 
 
+// ------- Update main magical attribute method -------- //
 void Blob::updateMainMag() {
 	int id = 0;
 	if (magic[0] < std::max(magic[1], magic[2])) {
@@ -356,81 +364,80 @@ void Blob::updateMainMag() {
 
 
 
-
-
-std::vector<Skill const*> Blob::getKnownSkills() const {
-	return skills;
-}
-
-
-Equipment const* Blob::getInventory(int id) const {
-	assert(id == 0 || id == 1 || id == 2);
-	return inventory[id];
-}
-
-
-int Blob::getMagic(int id) const {
-	assert(id == 0 || id == 1 || id == 2);
-	return magic[id];
-}
-
-
-AttType::AttType Blob::getMainMag() const {
-	return main_mag;
-}
-
-
+// ------- Reset stats method -------- //
 void Blob::resetStats() {
 	HP = MAX_HP;
 	EP = MAX_EP;
 }
 
 
+
+// ------- Getter for skills -------- //
+std::vector<Skill const*> Blob::getKnownSkills() const {
+	return skills;
+}
+
+// ------- Getter for inventory -------- //
+Equipment const* Blob::getInventory(int id) const {
+	assert(id == 0 || id == 1 || id == 2);
+	return inventory[id];
+}
+
+// ------- Getter for magic -------- //
+int Blob::getMagic(int id) const {
+	assert(id == 0 || id == 1 || id == 2);
+	return magic[id];
+}
+
+// ------- Getter for main_mag -------- //
+AttType::AttType Blob::getMainMag() const {
+	return main_mag;
+}
+
+// ------- Getter for stats -------- //
 std::vector<int> Blob::getStats() const {
 	return std::vector<int>({ HP, MAX_HP, EP, MAX_EP, atk, def, lvl });
 }
 
-
-
+// ------- Getter for name -------- //
 std::string Blob::getName() const {
 	return name;
 }
 
-
+// ------- Getter for alive -------- //
 bool Blob::isAlive() const {
 	return alive;
 }
 
+// ------- Getter for money -------- //
+int Blob::getMoney() const {
+	return money;
+}
 
+// ------- Getter for color -------- //
 sf::Color Blob::getColor() const {
 	return color;
 }
 
-
+// ------- Getter for size -------- //
 float Blob::getSize() const {
 	return size;
 }
 
 
-int Blob::getMoney() const {
-	return money;
-}
-
-
-
-
+// ------- Is equal method -------- //
 bool Blob::isEqual(Blob const &b) const{
-	return ( name == b.getName()
+	return (name == b.getName()
 		&& getStats() == b.getStats()
 		&& getMainMag() == b.getMainMag()
-		&& size == b.getSize()
-		&& color == b.getColor()
+		&& size == size
+	    && color == color
 		&& skills == b.getKnownSkills() );
 }
 
 
 
-
+// ------- Draw method -------- //
 void Blob::draw(sf::RenderWindow* window, float x, float y) {
 	sf::CircleShape circle;
 	circle.setFillColor(color);
@@ -446,7 +453,7 @@ void Blob::draw(sf::RenderWindow* window, float x, float y) {
 
 
 
-
+// ------- Random function -------- //
 int d(int const nbSides) {
 	static std::random_device rd;
 	static std::default_random_engine engine(rd());
@@ -454,7 +461,7 @@ int d(int const nbSides) {
 	return distribution(engine);
 }
 
-
+// ------- Int to sf::Color method -------- //
 sf::Color colorSFRGB(int i) {
 	switch (i) {
 	case RED:
@@ -472,7 +479,7 @@ sf::Color colorSFRGB(int i) {
 	}
 }
 
-
+// ------- == operator -------- //
 bool operator==(Blob const &b1, Blob const &b2) {
 	return (b1.isEqual(b2));
 }

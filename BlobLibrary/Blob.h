@@ -10,6 +10,7 @@
 #include "Equipment.h"
 #include "Skill.h"
 #include "AttType.h"
+#include "TextBox.h"
 
 
 #define COEFF_DEF 0.5 //multiplicative coefficient in case of defending 
@@ -65,6 +66,7 @@ public :
 	
 	bool isEqual(Blob const &b) const;  //used for blob comparison
 	void draw(sf::RenderWindow* window, float x, float y);  //used to draw blob 
+	void drawStats(sf::RenderWindow* window, TextBox &tb);
 
 
 

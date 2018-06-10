@@ -6,7 +6,7 @@ MenuFight::MenuFight(float width, float height, sf::Vector2f &origin)
 	: Menu(width, height, 3)
 {
 	if (!font.loadFromFile("../arial.ttf")) {
-
+		std::cout << "Font loading error" << std::endl;
 	}
 	text[0].setFont(font);
 	text[0].setFillColor(sf::Color::Red);

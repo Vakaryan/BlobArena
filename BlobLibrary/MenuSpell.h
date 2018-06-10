@@ -5,5 +5,5 @@
 
 class MenuSpell : public Menu {
 public:
-	MenuSpell(float width, float height, Blob &b);
+	MenuSpell(float width, float height, sf::Vector2f &origin, Blob &b);
 };

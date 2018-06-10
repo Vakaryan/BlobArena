@@ -20,10 +20,10 @@ class FightState : public GameState {
 public:
 	FightState(Blob &player, int &roundNo, std::string const &name, std::vector<Equipment const*> &all_equipments, std::vector<Skill const*> &all_skills, sf::RenderWindow* window);  //constructor, creates adequate adversary blob	
 	void loop();  //fight loop
-	void turn(std::pair<PlayerAction, int> player_action, Blob &adv);  //1 turn loop
+	std::string turn(std::pair<PlayerAction, int> player_action, Blob &adv, TextBox &tb);  //1 turn loop
 	bool isWon();  //getter for wonOrLost
 	std::pair<PlayerAction, int> getAdvAction(Blob &b);   //"AI" action
-	void inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpell menuS, int IdMenu, Blob &adv);  //returns type of attack and number of spell (if spell), -1 if other 
+	void inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpell menuS, int IdMenu, Blob &adv, TextBox &tb);  //returns type of attack and number of spell (if spell), -1 if other 
 	//idMenu = 1 -> menufight, idMenu = 0 -> menuSpell
 	bool isFinished(); //getter for endFight
 	void drawArena(sf::RenderWindow* window, Blob &plyr, Blob &adv);  //draws the arena

@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include <iostream>
  
 #define MAX_ITEM_NUMBER 16 //max 15 equipments + return button
 
