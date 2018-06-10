@@ -23,7 +23,7 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 	
 	while (1) {
 
-		tb.draw(*main_window, smain);
+		tb.draw(*main_window, smain, 24);
 
 		sf::Event event;
 		while (window->pollEvent(event)) {
@@ -96,7 +96,7 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 
 		window->clear();
 
-		tb.draw(*main_window, smain);
+		tb.draw(*main_window, smain, 24);
 
 		if (idMenu) {
 			menuF.draw(*window);
@@ -423,6 +423,7 @@ void FightState::drawArena(sf::RenderWindow* window, Blob &plyr, Blob &adv) {
 	sf::Vector2f originL(0, 10);
 	sf::Vector2f originR(window->getSize().x - 200, 10);
 	sf::Vector2f size(200, window->getSize().y - 300);
+	
 	sf::RectangleShape pillarL;
 	sf::RectangleShape pillarR;
 	pillarL.setPosition(originL);
@@ -431,9 +432,15 @@ void FightState::drawArena(sf::RenderWindow* window, Blob &plyr, Blob &adv) {
 	pillarR.setPosition(originR);
 	pillarR.setSize(size);
 	pillarR.setFillColor(sf::Color::White);
+	
+	TextBox boxL(size.x, size.y, originL);
+	TextBox boxR(size.x, size.y, originR);
+	
 	window->draw(pillarL);
 	window->draw(pillarR);
 
 	player.draw(main_window, main_window->getSize().x * 3 / 10 - player.getSize(), main_window->getSize().y * 1 / 2 - player.getSize());
 	adv.draw(main_window, main_window->getSize().x * 7 / 10 - player.getSize(), main_window->getSize().y * 1 / 2 - player.getSize());
+	player.drawStats(main_window, boxL);
+	adv.drawStats(main_window, boxR);
 }

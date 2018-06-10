@@ -446,7 +446,32 @@ void Blob::draw(sf::RenderWindow* window, float x, float y) {
 	window->draw(circle);
 }
 
-
+// ------- Draw stats method -------- //
+void Blob::drawStats(sf::RenderWindow* window, TextBox &tb) {
+	std::string sstatus = name + "\n" 
+		+ "Lvl " + std::to_string(lvl) + "\n" 
+		+ "HP = " + std::to_string(HP) + " / " + std::to_string(MAX_HP) + "\n"
+		+ "EP = " + std::to_string(EP) + " / " + std::to_string(MAX_EP) + "\n"
+		+ "Inventory :\n";
+	for (auto &i : inventory) {
+		if(i!=nullptr){
+			sstatus += i->name + "\n";
+		}
+	}
+	sstatus += "\n";
+	sstatus += "Skills :\n";
+	if (skills.size() < 0) {
+		for (auto &i : skills) {
+			if (i != nullptr) {
+				sstatus += i->name + "\n";
+			}
+		}
+	}
+	sstatus += "\n";
+	sstatus += "Main magic : " + att_to_str(main_mag);
+	
+	tb.draw(*window, sstatus, 18);
+}
 
 
 

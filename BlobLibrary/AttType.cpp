@@ -12,3 +12,20 @@ AttType::AttType str_to_att(std::string s) {
 		return AttType::blue;
 	}
 }
+
+std::string att_to_str(AttType::AttType a) {
+	switch (a) {
+	case AttType::red:
+		return "red";
+		break;
+	case AttType::green:
+		return "green";
+		break;
+	case AttType::blue:
+		return  "blue";
+		break;
+	case AttType::physical:
+		return "none";
+		break;
+	}
+}

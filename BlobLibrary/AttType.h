@@ -6,3 +6,4 @@ namespace AttType {
 }
 
 AttType::AttType str_to_att(std::string s);
+std::string att_to_str(AttType::AttType a);
