@@ -2,13 +2,13 @@
 #include "Merchant.h"
 
 
-Merchant::Merchant(std::vector<Equipment*> const all_equipments)
+Merchant::Merchant(std::vector<Equipment const*> all_equipments)
 	: inventory(all_equipments)
 {
 }
 
 
-bool Merchant::sellEquipment(Equipment*& const e, Blob& client) {
+bool Merchant::sellEquipment(Equipment const* e, Blob& client) {
 	if (client.getMoney() >= e->price) {
 		client.buyEquipment(e);
 		switch (e->type) {
@@ -31,12 +31,12 @@ bool Merchant::sellEquipment(Equipment*& const e, Blob& client) {
 }
 
 
-std::vector<Equipment*> Merchant::getInventory() {
+std::vector<Equipment const*> Merchant::getInventory() {
 	return inventory;
 }
 
 
-void eraseEquipment(Equipment*& const e, std::vector<Equipment*> &vect) {
+void eraseEquipment(Equipment const* e, std::vector<Equipment const*> &vect) {
 	size_t id = 0;
 	while (id < vect.size()) {
 		if (vect[id] == e) {

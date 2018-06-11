@@ -1,3 +1,5 @@
 Changer ptr en shared_ptr (optimisation mémoire)
-
-Pattern states (fight + vestiaire) -> la hiérarchie de classe est toujours en vie !!!
+Commenter code / titrer
+Remplacer auto i fair auto &i
+Dear ImGui
+Getter renvoyant &

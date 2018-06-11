@@ -21,14 +21,14 @@
 
 TEST(TestBlob, TestConstructorDef) {
 	Blob bob{ "bob" };
-	std::vector<int> exp_stats({ 5,5,7,7,3,1,1 });
+	std::vector<int> exp_stats({ BASE_HP,BASE_HP,BASE_EP,BASE_EP,BASE_ATK,BASE_DEF,1 });
 	int exp_magic[] = { 2,2,2 };
 	EXPECT_EQ("bob", bob.getName());
 	EXPECT_EQ(bob.getStats(), exp_stats);
 	EXPECT_EQ(bob.getMagic(0), exp_magic[0]);
 	EXPECT_EQ(bob.getMagic(1), exp_magic[1]);
 	EXPECT_EQ(bob.getMagic(2), exp_magic[2]);
-	EXPECT_TRUE(bob.getAlive());
+	EXPECT_TRUE(bob.isAlive());
 	EXPECT_EQ(bob.getColor(), sf::Color::White);
 	EXPECT_EQ(bob.getSize(), 50);
 	EXPECT_EQ(bob.getMoney(), 0);
@@ -44,8 +44,8 @@ TEST(TestBlob, TestConstructorAdvLVL1) {
 		std::cout << "XML parsing error" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	std::vector<Equipment*> all_equip;
-	std::vector<Skill*> all_skills;
+	std::vector<Equipment const*> all_equip;
+	std::vector<Skill const*> all_skills;
 	for (auto i : doc.child("data_base").child("All_equipments").children()) {
 		all_equip.push_back(new Equipment(i));
 	}
@@ -68,8 +68,8 @@ TEST(TestBlob, TestConstructorAdvTIER3) {
 		std::cout << "XML parsing error" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	std::vector<Equipment*> all_eq;
-	std::vector<Skill*> all_sk;
+	std::vector<Equipment const*> all_eq;
+	std::vector<Skill const*> all_sk;
 	for (auto i : doc.child("data_base").child("All_equipments").children()) {
 		all_eq.push_back(new Equipment(i));
 	}
@@ -100,7 +100,7 @@ TEST(TestBlob, TestConstructorAdvTIER3) {
 
 	//equipments
 	int count_eq = 0;
-	Equipment* bob_inventory[] = { bob.getInventory(0), bob.getInventory(1), bob.getInventory(2) };
+	Equipment const* bob_inventory[] = { bob.getInventory(0), bob.getInventory(1), bob.getInventory(2) };
 	for (auto i : bob_inventory) {
 		if (i != nullptr) {
 			ASSERT_EQ(i->eqLVL, 1);
@@ -110,7 +110,7 @@ TEST(TestBlob, TestConstructorAdvTIER3) {
 	ASSERT_EQ(count_eq, 1);
 
 	//skills
-	std::vector<Skill*> bob_skills = bob.getKnownSkills();
+	std::vector<Skill const*> bob_skills = bob.getKnownSkills();
 	ASSERT_EQ(bob_skills.size(), 1);
 	ASSERT_EQ(bob_skills[0]->skillLVL, 1);
 	ASSERT_EQ(bob_skills[0]->type, bob.getMainMag());
@@ -126,8 +126,8 @@ TEST(TestBlob, TestConstructorAdvTIER2) {
 		std::cout << "XML parsing error" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	std::vector<Equipment*> all_eq;
-	std::vector<Skill*> all_sk;
+	std::vector<Equipment const*> all_eq;
+	std::vector<Skill const*> all_sk;
 	for (auto i : doc.child("data_base").child("All_equipments").children()) {
 		all_eq.push_back(new Equipment(i));
 	}
@@ -159,7 +159,7 @@ TEST(TestBlob, TestConstructorAdvTIER2) {
 	//equipments
 	int count_eq = 0;
 	int count_lvl2 = 0;
-	Equipment* bob_inventory[] = { bob.getInventory(0), bob.getInventory(1), bob.getInventory(2) };
+	Equipment const* bob_inventory[] = { bob.getInventory(0), bob.getInventory(1), bob.getInventory(2) };
 	for (auto i : bob_inventory) {
 		if (i != nullptr) {
 			ASSERT_TRUE(i->eqLVL == 1 || i->eqLVL == 2);
@@ -171,7 +171,7 @@ TEST(TestBlob, TestConstructorAdvTIER2) {
 	ASSERT_TRUE(count_eq == 1 || count_eq == 2);
 
 	//skills
-	std::vector<Skill*> bob_skills = bob.getKnownSkills();
+	std::vector<Skill const*> bob_skills = bob.getKnownSkills();
 	ASSERT_EQ(bob_skills.size(), 2);
 	ASSERT_EQ(bob_skills[0]->skillLVL, 2);
 	ASSERT_EQ(bob_skills[0]->type, bob.getMainMag());
@@ -188,8 +188,8 @@ TEST(TestBlob, TestConstructorAdvTIER1) {
 		std::cout << "XML parsing error" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	std::vector<Equipment*> all_eq;
-	std::vector<Skill*> all_sk;
+	std::vector<Equipment const*> all_eq;
+	std::vector<Skill const*> all_sk;
 	for (auto i : doc.child("data_base").child("All_equipments").children()) {
 		all_eq.push_back(new Equipment(i));
 	}
@@ -221,7 +221,7 @@ TEST(TestBlob, TestConstructorAdvTIER1) {
 	//equipments
 	int count_eq = 0;
 	int count_lvl3 = 0;
-	Equipment* bob_inventory[] = { bob.getInventory(0), bob.getInventory(1), bob.getInventory(2) };
+	Equipment const* bob_inventory[] = { bob.getInventory(0), bob.getInventory(1), bob.getInventory(2) };
 	for (auto i : bob_inventory) {
 		if (i != nullptr) {
 			ASSERT_TRUE(i->eqLVL == 1 || i->eqLVL == 2 || i->eqLVL == 3);
@@ -233,7 +233,7 @@ TEST(TestBlob, TestConstructorAdvTIER1) {
 	ASSERT_TRUE(count_eq >= 1 && count_eq <= 3);
 
 	//skills
-	std::vector<Skill*> bob_skills = bob.getKnownSkills();
+	std::vector<Skill const*> bob_skills = bob.getKnownSkills();
 	ASSERT_EQ(bob_skills.size(), 3);
 	ASSERT_EQ(bob_skills[0]->skillLVL, 3);
 	ASSERT_EQ(bob_skills[0]->type, bob.getMainMag());
@@ -252,8 +252,8 @@ TEST(TestBlob, TestLVLUP) {
 		std::cout << "XML parsing error" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	std::vector<Equipment*> all_eq;
-	std::vector<Skill*> all_sk;
+	std::vector<Equipment const*> all_eq;
+	std::vector<Skill const*> all_sk;
 	for (auto i : doc.child("data_base").child("All_equipments").children()) {
 		all_eq.push_back(new Equipment(i));
 	}
@@ -430,7 +430,7 @@ TEST(TestMoney, TestMerchant) {
 		std::cout << "XML parsing error" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	std::vector<Equipment*> all_eq;
+	std::vector<Equipment const*> all_eq;
 	for (auto i : doc.child("data_base").child("All_equipments").children()) {
 		all_eq.push_back(new Equipment(i));
 	}
@@ -467,7 +467,7 @@ TEST(TestMoney, TestMerchant) {
 	int coins = bob.getMoney();
 	bool r = khajiit.sellEquipment(e1, bob);
 	ASSERT_EQ(bob.getInventory(0), e1);
-	std::vector<Equipment*> wares = khajiit.getInventory();
+	std::vector<Equipment const*> wares = khajiit.getInventory();
 	int count = 0;
 	for (auto i : wares) {
 		count += (i == e1);
@@ -580,17 +580,17 @@ TEST(TestFight, TestGetHit) {
 	//not enough dmg to pass through defense - tis but a scratch
 	int hit = bob.getHit(1, false, AttType::physical);
 	ASSERT_EQ(bob.getStats()[B_HP], bob.getStats()[B_MAXHP]);
-	ASSERT_TRUE(bob.getAlive());
+	ASSERT_TRUE(bob.isAlive());
 
 	//enough dmg to hurt but no more - DM atk
 	hit = bob.getHit(5, false, AttType::physical);
 	std::cout << bob.getStats()[B_MAXHP] << std::endl;
 	std::cout << 5 - bob.defend(AttType::physical, false) << std::endl;
 	ASSERT_EQ(bob.getStats()[B_HP], bob.getStats()[B_MAXHP] - (5 - bob.defend(AttType::physical, false)));
-	ASSERT_TRUE(bob.getAlive());
+	ASSERT_TRUE(bob.isAlive());
 
 	//enough dmg to obliterate the whole arena - it's over 9000
 	hit = bob.getHit(9002, false, AttType::physical);
 	ASSERT_EQ(bob.getStats()[B_HP], 0);
-	ASSERT_FALSE(bob.getAlive());
+	ASSERT_FALSE(bob.isAlive());
 }

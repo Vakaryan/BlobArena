@@ -50,7 +50,7 @@
 	<Skill lvl="2" type="blue" name="Thunderbolt" dmg="6" cost="4" description="Blobachu, use Thunderbolt!"/>
 	
 	<!-- Lvl 3 skills -->
-    <Skill lvl="3" type="red" name="Fire Storm" dmg="9" cost="6" description="Some blob just want to watch the world burn"/>
+    <Skill lvl="3" type="red" name="Fire Storm" dmg="9" cost="6" description="Some blobs just want to watch the world burn"/>
   	<Skill lvl="3" type="green" name="Meteor Slash" dmg="9" cost="6" description="Even more powerful when shooting 'Pegasuuus Meteoooor!'"/>
 	<Skill lvl="3" type="blue" name="Lightning Beam" dmg="9" cost="6" description="It's over 9000 volts"/>
 	
