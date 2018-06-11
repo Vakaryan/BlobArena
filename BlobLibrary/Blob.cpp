@@ -344,8 +344,6 @@ void Blob::lvlUP() {
 }
 
 
-
-
 // ------- Lvl up by eating method -------- //
 void Blob::lvlUP(Blob &b) {
 	lvlUP();
@@ -360,6 +358,7 @@ void Blob::lvlUP(Blob &b) {
 	for (auto i : b.getKnownSkills()) {
 		getSkill(i);
 	}
+	resetStats();
 }
 
 
@@ -484,8 +483,8 @@ void Blob::drawStats(sf::RenderWindow* window, TextBox &tb) {
 			}
 		}
 	}
-	sstatus += "\n";
-	sstatus += "Main magic : " + att_to_str(main_mag);
+	sstatus += "\nMain magic : " + att_to_str(main_mag) + "\n";
+	sstatus += "\nMoney : " + std::to_string(money);
 	
 	tb.draw(*window, sstatus, 18);
 }

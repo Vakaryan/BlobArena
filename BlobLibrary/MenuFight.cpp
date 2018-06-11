@@ -3,7 +3,7 @@
 
 
 MenuFight::MenuFight(float width, float height, sf::Vector2f &origin)
-	: Menu(width, height, 4)
+	: Menu(width, height, 3)
 {
 	if (!font.loadFromFile("../arial.ttf")) {
 		std::cout << "Font loading error" << std::endl;
@@ -22,9 +22,4 @@ MenuFight::MenuFight(float width, float height, sf::Vector2f &origin)
 	text[2].setFillColor(sf::Color::White);
 	text[2].setString("Use Spell");
 	text[2].setPosition(sf::Vector2f(width / 2 + origin.x, height / (item_number + 1) * 3 + origin.y));
-
-	text[3].setFont(font);
-	text[3].setFillColor(sf::Color::White);
-	text[3].setString("Return");
-	text[3].setPosition(sf::Vector2f(width / 2 + origin.x, height / (item_number + 1) * 4 + origin.y));
 }

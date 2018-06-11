@@ -24,15 +24,16 @@ public:
 	std::string turn(std::pair<PlayerAction, int> player_action, Blob &adv, TextBox &tb);  //1 turn loop
 	bool isWon();  //getter for wonOrLost
 	std::pair<PlayerAction, int> getAdvAction(Blob &b);   //"AI" action
-	void inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpell menuS, int IdMenu, Blob &adv, TextBox &tb);  //returns type of attack and number of spell (if spell), -1 if other 
+	void inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpell menuS, MenuEndFight menuE, int IdMenu, Blob &adv, TextBox &tb);  //returns type of attack and number of spell (if spell), -1 if other 
 	//idMenu = 1 -> menufight, idMenu = 2 -> menuSpell, idMenu = 3 -> menuEndFight
-	bool isFinished(); //getter for endFight
+	bool isOver(); //getter for roundOver
 	void drawArena(sf::RenderWindow* window, Blob &plyr, Blob &adv);  //draws the arena
 
 protected:
 	int roundNo;  //number of the round 
 	bool endFight;  //bool true if fight has ended
 	bool wonOrLost;  //bool true if round won by the player, false if lost
+	bool roundOver;  //bool true if round is over (endfight included)
 	std::vector<Equipment const*> all_eq;  //all equipments
 	std::vector<Skill const*> all_sk;  //all skills
 	std::string const name;  //name for adv blob

@@ -10,20 +10,29 @@ FightState::FightState(Blob& player, int &roundNo, std::string const &name, std:
 	all_eq(all_equipments),
 	all_sk(all_skills),
 	name(name),
-	endFight(false)
+	endFight(false),
+	roundOver(false)
 {
+	if (!music.openFromFile("../Battle-Furious-loop.wav")) {
+		std::cout << "Sound loading failed" << std::endl;
+	}
 }
 
 
 
-void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpell menuS, int idMenu, Blob &adv, TextBox &tb) {
+void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpell menuS, MenuEndFight menuE, int idMenu, Blob &adv, TextBox &tb) {
 	
 	sf::Event event;
-	std::string smain = "What do you want to do?";
+	std::string smain;
+	if (!wonOrLost) {
+		smain = "What do you want to do?\n";
+	}
+	else {
+		smain = "Fight won\n";
+	}
 	
-	while (1) {
+	while (!roundOver) {
 
-		tb.draw(*main_window, smain, 24);
 
 		sf::Event event;
 		while (window->pollEvent(event)) {
@@ -31,6 +40,7 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 			
 			case sf::Event::Closed:
 				window->close();
+				music.stop();
 				break;
 
 
@@ -40,29 +50,47 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 			switch (event.key.code) {
 			
 			case sf::Keyboard::Up:
-					if (idMenu) {
-						menuF.moveUP();
-					}
-					else {
-						menuS.moveUP();
-					}
+				switch (idMenu) {
+				case 1:
+					menuF.moveUP();
 					break;
+
+				case 2:
+					menuS.moveUP();
+					break;
+
+				case 3:
+					menuE.moveUP();
+					break;
+				}
+				break;
 
 			
 			case sf::Keyboard::Down:
-					if (idMenu) {
-						menuF.moveDOWN();
-					}
-					else {
-						menuS.moveDOWN();
-					}
+				switch (idMenu) {
+				case 1:
+					menuF.moveDOWN();
 					break;
+
+				case 2:
+					menuS.moveDOWN();
+					break;
+
+				case 3:
+					menuE.moveDOWN();
+					break;
+				}
+				break;
 
 
 				case::sf::Keyboard::Return:
 
+					
+					switch (idMenu) { 
+					
 					//MenuFight
-					if (idMenu) {  
+					case 1:
+
 						switch (menuF.getPressedItem()) {
 						case 0:
 							std::cout << "Attack" << std::endl;
@@ -74,47 +102,115 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 							break;
 						case 2:
 							std::cout << "Use spell" << std::endl;
-							inputManager(window, menuF, menuS, 0, adv, tb);
+							inputManager(window, menuF, menuS, menuE, 2, adv, tb);
 							break;
 						}
-					}
+						break;
+
 
 					//MenuSpell
-					else {
+					case 2:
 						if (menuS.getPressedItem() < menuS.item_number - 1) {
 							std::cout << "Use spell" << std::endl;
 							smain = turn(std::make_pair(spell, menuS.getPressedItem()), adv, tb);
 						}
 						else { //return button
-							inputManager(window, menuF, menuS, 1, adv, tb);
+							inputManager(window, menuF, menuS, menuE, 1, adv, tb);
 						}
-					}
+						break;
+
+
+					//MenuEndFight
+					case 3:
+						switch(menuE.getPressedItem()) {
+						case 0:
+								std::cout << "Eat opponent's corpse and lvl up" << std::endl;
+								player.lvlUP(adv);
+								smain = "\nYou levelled up and learned ";
+								if (adv.skills.size() > 0) {
+									for (auto &i : adv.skills) {
+										smain += i->name + " ";
+									}
+								}
+								smain += "\n";
+								tb.draw(*main_window, smain, 24);
+								window->display();
+								roundOver = true;
+								return;
+							break;
+					    
+						case 1:
+								std::cout << "Sell opponent's corpse and get money" << std::endl;
+								int loot = player.sellCorpse(roundNo);
+								smain = "\nYou sold your opponent's corpse and earned " + std::to_string(loot) + "\n";
+								tb.draw(*main_window, smain, 24);
+								window->display();
+								roundOver = true;
+								return;
+							break;
+					    }
+
+
 					break;
+					}
 				}
 			}
 		}
 
 		window->clear();
 
-		if (idMenu) {
+		
+		switch (idMenu) {
+		case 1:
 			menuF.draw(*window);
-		}
-		else {
+			break;
+		case 2:
 			menuS.draw(*window);
+			break;
+		case 3:
+			menuE.draw(*window);
+			break;
 		}
+
 		drawArena(main_window, player, adv);
 
-		if (endFight) {
+		if (endFight && idMenu != 3) {
 			wonOrLost = player.isAlive();
 			if (wonOrLost) {
 				smain = "Fight won";
+				tb.draw(*main_window, smain, 24);
+				window->display();
+				player.resetStats();
+				inputManager(main_window, menuF, menuS, menuE, 3, adv, tb);
 			}
 			else {
-				smain = "Fight lost";
+				if (!adv.isAlive()) {
+					int hot = d(2) - 1;
+					if (hot) {
+						smain = "Draw -> you won";
+						tb.draw(*main_window, smain, 24);
+						window->display();
+						player.resetStats();
+						inputManager(main_window, menuF, menuS, menuE, 3, adv, tb);
+					}
+					else {
+						smain = "Draw -> you lost";
+						tb.draw(*main_window, smain, 24);
+						window->display();
+						roundOver = true;
+						return;
+					}
+				}
+				else {
+					smain = "Fight lost";
+					tb.draw(*main_window, smain, 24);
+					window->display();
+					roundOver = true;
+					return;
+				}
 			}
 			tb.draw(*main_window, smain, 24);
 			window->display();
-			break;
 		}
 
 		tb.draw(*main_window, smain, 24);
@@ -411,8 +507,13 @@ void FightState::loop() {
 	sf::Vector2f originBox(0, main_window->getSize().y - 300);
 	MenuFight menuF( 300, 300, originMenu);
 	MenuSpell menuS{ 300, 300, originMenu, player };
+	MenuEndFight menuE{ 500, 300, originMenu };
 	TextBox tb{ (float) main_window->getSize().x, 300, originBox };
-	inputManager(main_window, menuF, menuS, 1, adv, tb);
+	music.setLoop(true);
+	music.play();
+	while (!roundOver) {
+		inputManager(main_window, menuF, menuS, menuE, 1, adv, tb);
+	}
 }
 
 
@@ -422,8 +523,8 @@ bool FightState::isWon() {
 	return wonOrLost;
 }
 
-bool FightState::isFinished() {
-	return endFight;
+bool FightState::isOver() {
+	return roundOver;
 }
 
 

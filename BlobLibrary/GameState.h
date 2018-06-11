@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "SFML/Audio.hpp"
 #include "Blob.h"
 #include "Equipment.h"
 #include "Skill.h"
@@ -21,4 +22,5 @@ public:
 protected:
 	Blob player;
 	sf::RenderWindow* main_window;
+	sf::Music music;
 };
