@@ -14,7 +14,7 @@ FightState::FightState(Blob& player, int &roundNo, std::string const &name, std:
 	roundOver(false)
 {
 	if (!music.openFromFile("../Battle-Furious-loop.wav")) {
-		std::cout << "Sound loading failed" << std::endl;
+    std::cout << "Sound loading failed" << std::endl;
 	}
 }
 
