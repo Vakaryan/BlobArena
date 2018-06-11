@@ -21,14 +21,14 @@ void Menu::moveUP() {
 	if (selectedItemID - 1 >= 0) {
 		text[selectedItemID].setFillColor(sf::Color::White);
 		selectedItemID--;
-		text[selectedItemID].setFillColor(sf::Color::Red);
+		text[selectedItemID].setFillColor(sf::Color::Magenta);
 	}
 
 }void Menu::moveDOWN() {
 	if (selectedItemID + 1 < item_number) {
 		text[selectedItemID].setFillColor(sf::Color::White);
 		selectedItemID++;
-		text[selectedItemID].setFillColor(sf::Color::Red);
+		text[selectedItemID].setFillColor(sf::Color::Magenta);
 	}
 }
 

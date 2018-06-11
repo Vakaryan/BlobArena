@@ -307,18 +307,18 @@ void Blob::getSkill(Skill const* s) {
 int Blob::sellCorpse(int lvladv) {
 	//3rd tier corpse
 	if (lvladv < 5) {
-		money += 200;
-		return 200;
+		money += TIER3_CORPSE;
+		return TIER3_CORPSE;
 	}
 	//2nd tier corpse
 	else if (lvladv >= 5 && lvladv < 8) {
-		money += 550;
-		return 550;
+		money += TIER2_CORPSE;
+		return TIER2_CORPSE;
 	}
 	//1st tier corpse
 	else {
-		money += 850;
-		return 850;
+		money += TIER1_CORPSE;
+		return TIER1_CORPSE;
 	}
 }
 

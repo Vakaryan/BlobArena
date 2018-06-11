@@ -23,5 +23,5 @@ MenuSpell::MenuSpell(float width, float height, sf::Vector2f &origin, Blob &b)
 	text[item_number - 1].setPosition(sf::Vector2f(width / 2 + origin.x, height / (item_number + 1) * item_number + origin.y));
 
 	//1e item
-	text[0].setFillColor(sf::Color::Red);
+	text[0].setFillColor(sf::Color::Magenta);
 }

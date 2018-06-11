@@ -6,6 +6,7 @@
 #include <math.h>
 #include <iostream>
 #include <assert.h>
+#include "GlobalVar.h"
 #include "SFML/Graphics.hpp"
 #include "Equipment.h"
 #include "Skill.h"
@@ -13,23 +14,10 @@
 #include "TextBox.h"
 
 
-#define COEFF_DEF 0.5 //multiplicative coefficient in case of defending 
-#define COEFF_MAG 0.5 //multiplicative magic coefficient when using skill : dmg_made = dmg_skill *  coef_mag / defending : def = dmg_made * (1 +- coef_mag)
-#define COEFF_LVLUP 1 //additive coefficient when levelling up::l
 #define RED 0
 #define GREEN 1
 #define BLUE 2
 #define PHYS 3
-#define ARMOR 0
-#define WEAPON 1
-#define ACCESSORY 2
-//basic values for lvl1 blob (may change when balancing)
-#define BASE_ATK 4
-#define BASE_DEF 2
-#define BASE_HP 7
-#define BASE_EP 7
-#define BASE_MAG 2
-#define BASE_SIZE 100
 
 
 class Blob {

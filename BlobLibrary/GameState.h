@@ -7,6 +7,8 @@
 #include "AttType.h"
 #include "Menu.h"
 #include "TextBox.h"
+#include "ImGuiManager.h"
+#include "imgui.h"
 #include <string>
 #include <vector>
 #include <Windows.h>

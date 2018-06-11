@@ -3,20 +3,13 @@
 #include <iostream>
 #include "SFML/Graphics.hpp"
 #include "pugixml.hpp"
+#include "../BlobLibrary/GlobalVar.h"
 #include "../BlobLibrary/Blob.h"
 #include "../BlobLibrary/Equipment.h"
 #include "../BlobLibrary/Skill.h"
 #include "../BlobLibrary/AttType.h"
 #include "../BlobLibrary/Merchant.h"
 
-
-#define B_HP 0
-#define B_MAXHP 1
-#define B_EP 2
-#define B_MAXEP 3
-#define B_ATK 4
-#define B_DEF 5
-#define B_LVL 6
 
 
 TEST(TestBlob, TestConstructorDef) {
@@ -270,12 +263,12 @@ TEST(TestBlob, TestLVLUP) {
 	std::vector<int> cur_stats = bob1.getStats();
 
 	//base_stats
-	ASSERT_TRUE(prev_stats[B_HP] == cur_stats[B_HP] - COEFF_LVLUP
-		&& prev_stats[B_MAXHP] == cur_stats[B_MAXHP] - COEFF_LVLUP
-		&& prev_stats[B_EP] == cur_stats[B_EP] - COEFF_LVLUP * 2
-		&& prev_stats[B_MAXEP] == cur_stats[B_MAXEP] - COEFF_LVLUP * 2
-		&& prev_stats[B_ATK] == cur_stats[B_ATK] - COEFF_LVLUP
-		&& prev_stats[B_DEF] == cur_stats[B_DEF] - COEFF_LVLUP
+	ASSERT_TRUE(prev_stats[B_HP] == cur_stats[B_HP] - 2*COEFF_LVLUP
+		&& prev_stats[B_MAXHP] == cur_stats[B_MAXHP] - 2*COEFF_LVLUP
+		&& prev_stats[B_EP] == cur_stats[B_EP] - 2*COEFF_LVLUP * 2
+		&& prev_stats[B_MAXEP] == cur_stats[B_MAXEP] - 2*COEFF_LVLUP * 2
+		&& prev_stats[B_ATK] == cur_stats[B_ATK] - 2*COEFF_LVLUP
+		&& prev_stats[B_DEF] == cur_stats[B_DEF] - 2*COEFF_LVLUP
 		&& prev_stats[B_LVL] == cur_stats[B_LVL] - COEFF_LVLUP
 	);
 
@@ -408,15 +401,15 @@ TEST(TestSkill, TestAddSkill) {
 TEST(TestMoney, TestSellCorpse) {
 	Blob bob{ "bob" };
 	bob.sellCorpse(1);
-	ASSERT_EQ(bob.getMoney(), 100);
+	ASSERT_EQ(bob.getMoney(), TIER3_CORPSE);
 	int prev_money = bob.getMoney();
 
 	bob.sellCorpse(5);
-	ASSERT_EQ(bob.getMoney(), prev_money + 400);
+	ASSERT_EQ(bob.getMoney(), prev_money + TIER2_CORPSE);
 	prev_money = bob.getMoney();
 
 	bob.sellCorpse(8);
-	ASSERT_EQ(bob.getMoney(), prev_money + 700);
+	ASSERT_EQ(bob.getMoney(), prev_money + TIER1_CORPSE);
 }
 
 
@@ -457,11 +450,10 @@ TEST(TestMoney, TestMerchant) {
 	Merchant khajiit{ all_eq }; 
 	ASSERT_FALSE(khajiit.sellEquipment(e1, bob));
 
-	bob.sellCorpse(10);
 	bob.sellCorpse(10); 
 	bob.sellCorpse(10); 
 	bob.sellCorpse(10); 
-	bob.sellCorpse(10); //now bob has 3500G
+	bob.sellCorpse(10); //now bob has 3400G
 	
 	//buying armor
 	int coins = bob.getMoney();
@@ -497,7 +489,7 @@ TEST(TestMoney, TestMerchant) {
 	ASSERT_EQ(count, 0);
 	ASSERT_EQ(bob.getMoney(), coins - e3->price);
 	coins = bob.getMoney();
-	ASSERT_EQ(coins, 500);
+	ASSERT_EQ(coins, 400);
 }
 
 

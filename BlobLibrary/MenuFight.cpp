@@ -9,7 +9,7 @@ MenuFight::MenuFight(float width, float height, sf::Vector2f &origin)
 		std::cout << "Font loading error" << std::endl;
 	}
 	text[0].setFont(font);
-	text[0].setFillColor(sf::Color::Red);
+	text[0].setFillColor(sf::Color::Magenta);
 	text[0].setString("Attack");
 	text[0].setPosition(sf::Vector2f(width / 2 + origin.x, height / (item_number + 1) + origin.y));
 

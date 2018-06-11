@@ -36,6 +36,7 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 
 		sf::Event event;
 		while (window->pollEvent(event)) {
+
 			switch (event.type) {
 			
 			case sf::Event::Closed:
@@ -136,7 +137,6 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 								tb.draw(*main_window, smain, 24);
 								window->display();
 								roundOver = true;
-								return;
 							break;
 					    
 						case 1:
@@ -146,7 +146,6 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 								tb.draw(*main_window, smain, 24);
 								window->display();
 								roundOver = true;
-								return;
 							break;
 					    }
 
@@ -177,7 +176,7 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 		if (endFight && idMenu != 3) {
 			wonOrLost = player.isAlive();
 			if (wonOrLost) {
-				smain = "Fight won";
+				smain = "Fight won\n";
 				tb.draw(*main_window, smain, 24);
 				window->display();
 				player.resetStats();
@@ -187,14 +186,14 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 				if (!adv.isAlive()) {
 					int hot = d(2) - 1;
 					if (hot) {
-						smain = "Draw -> you won";
+						smain = "Draw -> you won\n";
 						tb.draw(*main_window, smain, 24);
 						window->display();
 						player.resetStats();
 						inputManager(main_window, menuF, menuS, menuE, 3, adv, tb);
 					}
 					else {
-						smain = "Draw -> you lost";
+						smain = "Draw -> you lost\n";
 						tb.draw(*main_window, smain, 24);
 						window->display();
 						roundOver = true;
@@ -202,7 +201,7 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 					}
 				}
 				else {
-					smain = "Fight lost";
+					smain = "Fight lost\n";
 					tb.draw(*main_window, smain, 24);
 					window->display();
 					roundOver = true;
