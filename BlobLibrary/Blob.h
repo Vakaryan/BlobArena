@@ -25,7 +25,7 @@ class Blob {
 
 public : 
 	Blob(std::string const &name);  //player blob constructor 
-	Blob(std::string const &name, int const &nlvl, std::vector<std::shared_ptr<Equipment>> &all_equipments, std::vector<std::shared_ptr<Skill>> &all_skills);  //adv blob constructor (at first name given)
+	Blob(std::string const &name, int const &nlvl, std::vector<std::shared_ptr<Equipment>> &all_equipments, std::vector<std::shared_ptr<Skill>> &all_skills);  //adv blob constructor
 	
 	std::pair<int, AttType::AttType> attack();  //return amount of damage done
 	double defend(AttType::AttType, bool defense_mode);  //return amount of damage countered (def x coeff)
@@ -53,12 +53,12 @@ public :
 	
 	bool isEqual(Blob &b) const;  //used for blob comparison
 	void draw(sf::RenderWindow* window, float x, float y);  //used to draw blob 
-	void drawStats(sf::RenderWindow* window, TextBox &tb);
+	void drawStats(sf::RenderWindow* window, TextBox &tb);  //used to draw stats
 
 
 
 protected :
-	std::string const name;
+	std::string const name;  //blob name
 	int lvl; //level 
 	int HP;  //health points
 	int EP;  //energy points - used for attacking (skill and normal attacks)

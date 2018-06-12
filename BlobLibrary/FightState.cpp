@@ -15,9 +15,6 @@ FightState::FightState(Blob& player, int &roundNo, std::string const &name, std:
 	endFight(false),
 	roundOver(false)
 {
-	if (!music.openFromFile("../Battle-Furious-loop.wav")) {
-    std::cout << "Sound loading failed" << std::endl;
-	}
 }
 
 
@@ -47,7 +44,6 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 			
 			case sf::Event::Closed:
 				window->close();
-				music.stop();
 				break;
 
 
@@ -235,14 +231,14 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 						inputManager(main_window, menuF, menuS, menuE, 3, adv, tb);
 					}
 					else {
-						smain = "Draw -> you lost\n";
+						smain = "Draw -> you lost\nGame Over";
 						tb.draw(*main_window, smain, 24);
 						window->display();
 						roundOver = true;
 					}
 				}
 				else {
-					smain = "Fight lost\n";
+					smain = "Fight lost\nGame Over ";
 					tb.draw(*main_window, smain, 24);
 					window->display();
 					roundOver = true;
@@ -548,8 +544,6 @@ void FightState::loop() {
 	MenuSpell menuS{ 300, 300, originMenu, player };
 	MenuEndFight menuE{ 500, 300, originMenu };
 	TextBox tb{ (float) main_window->getSize().x, 300, originBox };
-	music.setLoop(true);
-	music.play();
 	while (!roundOver) {
 		inputManager(main_window, menuF, menuS, menuE, 1, adv, tb);
 	}

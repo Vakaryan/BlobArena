@@ -1,4 +1,7 @@
 #pragma once
+//Global variables for the game
+//Could be used by ImGui
+
 
 
 static float COEFF_DEF = 0.5; //multiplicative coefficient in case of defending 

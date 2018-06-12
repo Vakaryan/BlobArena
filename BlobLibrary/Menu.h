@@ -14,8 +14,8 @@ public:
 	int getPressedItem(); //getter for selected item
 
 protected:
-	int item_number;
-	int selectedItemID;
-	sf::Font font;
-	sf::Text text[MAX_ITEM_NUMBER];
+	int item_number;  //number of menu entry
+	int selectedItemID;  //id of selected entry
+	sf::Font font;  //font used
+	sf::Text text[MAX_ITEM_NUMBER];  //text array
 };

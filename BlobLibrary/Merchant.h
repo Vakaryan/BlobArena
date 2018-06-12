@@ -12,9 +12,9 @@ public:
 	std::vector<std::shared_ptr<Equipment>>& getInventory();  //getter for inventory
 
 protected:
-	std::vector<std::shared_ptr<Equipment>> inventory;
+	std::vector<std::shared_ptr<Equipment>> inventory;  //merchant's inventory
 };
 
 
 
-void eraseEquipment(std::shared_ptr<Equipment> e, std::vector<std::shared_ptr<Equipment>> &vect);
+void eraseEquipment(std::shared_ptr<Equipment> e, std::vector<std::shared_ptr<Equipment>> &vect);  //erase an equipment from an inventory

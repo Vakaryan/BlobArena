@@ -14,7 +14,7 @@
 #define B_DEF 5
 #define B_LVL 6
 
-enum PlayerAction { attack, spell, defense};
+enum PlayerAction { attack, spell, defense };
 
 
 class FightState : public GameState {

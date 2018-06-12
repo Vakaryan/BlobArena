@@ -20,11 +20,10 @@
 
 class GameState {
 public:
-	GameState(Blob &player, sf::RenderWindow* window);
-	virtual void loop() = 0;
+	GameState(Blob &player, sf::RenderWindow* window);  //constructor
+	virtual void loop() = 0;  //virtual method for loop
 
 protected:
-	Blob player;
-	sf::RenderWindow* main_window;
-	sf::Music music;
+	Blob &player;  //player character
+	sf::RenderWindow* main_window;  //game window 
 };

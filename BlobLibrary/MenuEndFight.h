@@ -4,5 +4,5 @@
 
 class MenuEndFight : public Menu {
 public:
-	MenuEndFight(float width, float height, sf::Vector2f &origin);
+	MenuEndFight(float width, float height, sf::Vector2f &origin);  
 };

@@ -341,6 +341,7 @@ void Blob::lvlUP() {
 	EP += COEFF_LVLUP * 2;
 	MAX_HP += COEFF_LVLUP;
 	MAX_EP += COEFF_LVLUP*2;
+	size += 10;
 }
 
 
@@ -354,7 +355,6 @@ void Blob::lvlUP(Blob &b) {
 	magic[b_mag] += 3*COEFF_LVLUP;
 	updateMainMag();
 	color = colorSFRGB(main_mag);
-	size += 5;
 	for (auto i : b.getKnownSkills()) {
 		getSkill(i);
 	}
@@ -456,6 +456,7 @@ bool Blob::isEqual(Blob &b) const{
 // ------- Draw method -------- //
 void Blob::draw(sf::RenderWindow* window, float x, float y) {
 	sf::CircleShape circle;
+	circle.setOrigin(size, size);
 	circle.setFillColor(color);
 	circle.setRadius(size);
 	circle.setPosition(x, y);
