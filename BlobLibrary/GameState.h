@@ -7,12 +7,14 @@
 #include "AttType.h"
 #include "Menu.h"
 #include "TextBox.h"
-#include "ImGuiManager.h"
-#include "imgui.h"
 #include <string>
 #include <vector>
 #include <Windows.h>
 #include <iostream>
+#include <SFML/System/Clock.hpp>
+#include <SFML/Window/Event.hpp>
+#include "imgui.h"
+#include "imgui-SFML.h"
 
 
 

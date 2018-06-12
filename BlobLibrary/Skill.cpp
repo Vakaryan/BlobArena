@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "Skill.h"
 
 Skill::Skill(pugi::xml_node node)

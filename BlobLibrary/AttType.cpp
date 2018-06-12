@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "AttType.h"
 
 AttType::AttType str_to_att(std::string s) {

@@ -19,7 +19,7 @@ enum PlayerAction { attack, spell, defense};
 
 class FightState : public GameState {
 public:
-	FightState(Blob &player, int &roundNo, std::string const &name, std::vector<Equipment const*> &all_equipments, std::vector<Skill const*> &all_skills, sf::RenderWindow* window);  //constructor, creates adequate adversary blob	
+	FightState(Blob &player, int &roundNo, std::string const &name, std::vector<std::shared_ptr<Equipment>> &all_equipments, std::vector<std::shared_ptr<Skill>> &all_skills, sf::RenderWindow* window);  //constructor, creates adequate adversary blob	
 	void loop();  //fight loop
 	std::string turn(std::pair<PlayerAction, int> player_action, Blob &adv, TextBox &tb);  //1 turn loop
 	bool isWon();  //getter for wonOrLost
@@ -34,7 +34,7 @@ protected:
 	bool endFight;  //bool true if fight has ended
 	bool wonOrLost;  //bool true if round won by the player, false if lost
 	bool roundOver;  //bool true if round is over (endfight included)
-	std::vector<Equipment const*> all_eq;  //all equipments
-	std::vector<Skill const*> all_sk;  //all skills
+	std::vector<std::shared_ptr<Equipment>> all_eq;  //all equipments
+	std::vector<std::shared_ptr<Skill>> all_sk;  //all skills
 	std::string const name;  //name for adv blob
 };

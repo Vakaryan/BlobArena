@@ -37,18 +37,18 @@ TEST(TestBlob, TestConstructorAdvLVL1) {
 		std::cout << "XML parsing error" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	std::vector<Equipment const*> all_equip;
-	std::vector<Skill const*> all_skills;
+	std::vector<std::shared_ptr<Equipment>> all_equip;
+	std::vector<std::shared_ptr<Skill>> all_skills;
 	for (auto i : doc.child("data_base").child("All_equipments").children()) {
-		all_equip.push_back(new Equipment(i));
+		all_equip.push_back(std::make_shared<Equipment>(i));
 	}
 	for (auto i : doc.child("data_base").child("All_skills").children()) {
-		all_skills.push_back(new Skill(i));
+		all_skills.push_back(std::make_shared<Skill>(i));
 	}
 
 	Blob bob1{ "bob", 1, all_equip, all_skills };
 	Blob bob2{ "bob" };
-	EXPECT_TRUE(bob1 == bob2);
+	EXPECT_TRUE(bob1.isEqual(bob2));
 
 }
 
@@ -61,17 +61,17 @@ TEST(TestBlob, TestConstructorAdvTIER3) {
 		std::cout << "XML parsing error" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	std::vector<Equipment const*> all_eq;
-	std::vector<Skill const*> all_sk;
+	std::vector<std::shared_ptr<Equipment>> all_equip;
+	std::vector<std::shared_ptr<Skill>> all_skills;
 	for (auto i : doc.child("data_base").child("All_equipments").children()) {
-		all_eq.push_back(new Equipment(i));
+		all_equip.push_back(std::make_shared<Equipment>(i));
 	}
 	for (auto i : doc.child("data_base").child("All_skills").children()) {
-		all_sk.push_back(new Skill(i));
+		all_skills.push_back(std::make_shared<Skill>(i));
 	}
 
 
-	Blob bob{ "bob", 2, all_eq, all_sk };
+	Blob bob{ "bob", 2, all_equip, all_skills };
 	std::vector<int> exp_stats({ 6,6,9,9,4,2,2 });
 	int min_magic[] = { 2,2,2 };
 	EXPECT_TRUE(bob.getStats() >= exp_stats);
@@ -93,7 +93,7 @@ TEST(TestBlob, TestConstructorAdvTIER3) {
 
 	//equipments
 	int count_eq = 0;
-	Equipment const* bob_inventory[] = { bob.getInventory(0), bob.getInventory(1), bob.getInventory(2) };
+	std::shared_ptr<Equipment> bob_inventory[] = { bob.getInventory(0), bob.getInventory(1), bob.getInventory(2) };
 	for (auto i : bob_inventory) {
 		if (i != nullptr) {
 			ASSERT_EQ(i->eqLVL, 1);
@@ -103,7 +103,7 @@ TEST(TestBlob, TestConstructorAdvTIER3) {
 	ASSERT_EQ(count_eq, 1);
 
 	//skills
-	std::vector<Skill const*> bob_skills = bob.getKnownSkills();
+	std::vector<std::shared_ptr<Skill>> bob_skills = bob.getKnownSkills();
 	ASSERT_EQ(bob_skills.size(), 1);
 	ASSERT_EQ(bob_skills[0]->skillLVL, 1);
 	ASSERT_EQ(bob_skills[0]->type, bob.getMainMag());
@@ -119,17 +119,17 @@ TEST(TestBlob, TestConstructorAdvTIER2) {
 		std::cout << "XML parsing error" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	std::vector<Equipment const*> all_eq;
-	std::vector<Skill const*> all_sk;
+	std::vector<std::shared_ptr<Equipment>> all_equip;
+	std::vector<std::shared_ptr<Skill>> all_skills;
 	for (auto i : doc.child("data_base").child("All_equipments").children()) {
-		all_eq.push_back(new Equipment(i));
+		all_equip.push_back(std::make_shared<Equipment>(i));
 	}
 	for (auto i : doc.child("data_base").child("All_skills").children()) {
-		all_sk.push_back(new Skill(i));
+		all_skills.push_back(std::make_shared<Skill>(i));
 	}
 
 
-	Blob bob{ "bob", 5, all_eq, all_sk };
+	Blob bob{ "bob", 5, all_equip, all_skills };
 	std::vector<int> exp_stats({ 9,9,15,15,7,5,5 });
 	int min_magic[] = { 2,2,2 };
 	EXPECT_TRUE(bob.getStats() >= exp_stats);
@@ -152,7 +152,7 @@ TEST(TestBlob, TestConstructorAdvTIER2) {
 	//equipments
 	int count_eq = 0;
 	int count_lvl2 = 0;
-	Equipment const* bob_inventory[] = { bob.getInventory(0), bob.getInventory(1), bob.getInventory(2) };
+	std::shared_ptr<Equipment> bob_inventory[] = { bob.getInventory(0), bob.getInventory(1), bob.getInventory(2) };
 	for (auto i : bob_inventory) {
 		if (i != nullptr) {
 			ASSERT_TRUE(i->eqLVL == 1 || i->eqLVL == 2);
@@ -164,7 +164,7 @@ TEST(TestBlob, TestConstructorAdvTIER2) {
 	ASSERT_TRUE(count_eq == 1 || count_eq == 2);
 
 	//skills
-	std::vector<Skill const*> bob_skills = bob.getKnownSkills();
+	std::vector<std::shared_ptr<Skill>> bob_skills = bob.getKnownSkills();
 	ASSERT_EQ(bob_skills.size(), 2);
 	ASSERT_EQ(bob_skills[0]->skillLVL, 2);
 	ASSERT_EQ(bob_skills[0]->type, bob.getMainMag());
@@ -181,17 +181,17 @@ TEST(TestBlob, TestConstructorAdvTIER1) {
 		std::cout << "XML parsing error" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	std::vector<Equipment const*> all_eq;
-	std::vector<Skill const*> all_sk;
+	std::vector<std::shared_ptr<Equipment>> all_equip;
+	std::vector<std::shared_ptr<Skill>> all_skills;
 	for (auto i : doc.child("data_base").child("All_equipments").children()) {
-		all_eq.push_back(new Equipment(i));
+		all_equip.push_back(std::make_shared<Equipment>(i));
 	}
 	for (auto i : doc.child("data_base").child("All_skills").children()) {
-		all_sk.push_back(new Skill(i));
+		all_skills.push_back(std::make_shared<Skill>(i));
 	}
 
 
-	Blob bob{ "bob", 8, all_eq, all_sk };
+	Blob bob{ "bob", 8, all_equip, all_skills };
 	std::vector<int> exp_stats({ 12,12,21,21,10,8,8 });
 	int min_magic[] = { 2,2,2 };
 	EXPECT_TRUE(bob.getStats() >= exp_stats);
@@ -214,7 +214,7 @@ TEST(TestBlob, TestConstructorAdvTIER1) {
 	//equipments
 	int count_eq = 0;
 	int count_lvl3 = 0;
-	Equipment const* bob_inventory[] = { bob.getInventory(0), bob.getInventory(1), bob.getInventory(2) };
+	std::shared_ptr<Equipment> bob_inventory[] = { bob.getInventory(0), bob.getInventory(1), bob.getInventory(2) };
 	for (auto i : bob_inventory) {
 		if (i != nullptr) {
 			ASSERT_TRUE(i->eqLVL == 1 || i->eqLVL == 2 || i->eqLVL == 3);
@@ -226,7 +226,7 @@ TEST(TestBlob, TestConstructorAdvTIER1) {
 	ASSERT_TRUE(count_eq >= 1 && count_eq <= 3);
 
 	//skills
-	std::vector<Skill const*> bob_skills = bob.getKnownSkills();
+	std::vector<std::shared_ptr<Skill>> bob_skills = bob.getKnownSkills();
 	ASSERT_EQ(bob_skills.size(), 3);
 	ASSERT_EQ(bob_skills[0]->skillLVL, 3);
 	ASSERT_EQ(bob_skills[0]->type, bob.getMainMag());
@@ -245,19 +245,19 @@ TEST(TestBlob, TestLVLUP) {
 		std::cout << "XML parsing error" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	std::vector<Equipment const*> all_eq;
-	std::vector<Skill const*> all_sk;
+	std::vector<std::shared_ptr<Equipment>> all_equip;
+	std::vector<std::shared_ptr<Skill>> all_skills;
 	for (auto i : doc.child("data_base").child("All_equipments").children()) {
-		all_eq.push_back(new Equipment(i));
+		all_equip.push_back(std::make_shared<Equipment>(i));
 	}
 	for (auto i : doc.child("data_base").child("All_skills").children()) {
-		all_sk.push_back(new Skill(i));
+		all_skills.push_back(std::make_shared<Skill>(i));
 	}
 
 
 
 	Blob bob1{ "bob" };
-	Blob bob2{ "bob", d(10), all_eq, all_sk };
+	Blob bob2{ "bob", d(10), all_equip, all_skills };
 	std::vector<int> prev_stats = bob1.getStats();
 	bob1.lvlUP(bob2);
 	std::vector<int> cur_stats = bob1.getStats();
@@ -291,7 +291,7 @@ TEST(TestEquipment, TestEquipArmor) {
 	pugi::xml_document doc;
 	doc.load_string(s.c_str());
 	pugi::xml_node node = doc.child("Armor");
-	Equipment* armor = new Equipment(node);
+	auto armor = std::make_shared<Equipment>(node);
 
 	Blob bob{ "bob" };
 	std::vector<int> prev_stats = bob.getStats();
@@ -308,7 +308,7 @@ TEST(TestEquipment, TestEquipWeapon) {
 	pugi::xml_document doc;
 	doc.load_string(s.c_str());
 	pugi::xml_node node = doc.child("Weapon");
-	Equipment* weapon = new Equipment(node);
+	auto weapon =std::make_shared<Equipment>(node);
 
 	Blob bob{ "bob" };
 	std::vector<int> prev_stats = bob.getStats();
@@ -326,7 +326,7 @@ TEST(TestEquipment, TestEquipAccessory) {
 	pugi::xml_document doc;
 	doc.load_string(s.c_str());
 	pugi::xml_node node = doc.child("MagicAccessory");
-	Equipment* accessory = new Equipment(node);
+	auto accessory = std::make_shared<Equipment>(node);
 
 	Blob bob{ "bob" };
 	int prev_stats[]{ bob.getMagic(0), bob.getMagic(1), bob.getMagic(2) };
@@ -352,9 +352,9 @@ TEST(TestEquipment, TestDoubleEquip) {
 	pugi::xml_node node1 = doc1.child("MagicAccessory");
 	pugi::xml_node node2 = doc2.child("MagicAccessory");
 	pugi::xml_node node3 = doc3.child("MagicAccessory");
-	Equipment* accessory1 = new Equipment(node1);
-	Equipment* accessory2 = new Equipment(node2);
-	Equipment* accessory3 = new Equipment(node3);
+	auto accessory1 = std::make_shared<Equipment>(node1);
+	auto accessory2 = std::make_shared<Equipment>(node2);
+	auto accessory3 = std::make_shared<Equipment>(node3);
 
 	Blob bob{ "bob" };
 	bob.equip(accessory1);
@@ -383,7 +383,7 @@ TEST(TestSkill, TestAddSkill) {
 	pugi::xml_document doc;
 	doc.load_string(s.c_str());
 	pugi::xml_node node = doc.child("Skill");
-	Skill* skill = new Skill(node);
+	auto skill = std::make_shared<Skill>(node);
 	Blob bob{ "bob" };
 
 	bob.getSkill(skill);
@@ -423,9 +423,9 @@ TEST(TestMoney, TestMerchant) {
 		std::cout << "XML parsing error" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	std::vector<Equipment const*> all_eq;
+	std::vector<std::shared_ptr<Equipment>> all_eq;
 	for (auto i : doc.child("data_base").child("All_equipments").children()) {
-		all_eq.push_back(new Equipment(i));
+		all_eq.push_back(std::make_shared<Equipment>(i));
 	}
 
 	std::string s1 = R"(<Armor lvl="3" type="armor" name="Mithril Armor" buff="6" price="1000" description="Daaaaaamn! That's one dope armor!"/>)";
@@ -440,9 +440,9 @@ TEST(TestMoney, TestMerchant) {
 	pugi::xml_node node1 = doc1.child("Armor");
 	pugi::xml_node node2 = doc2.child("Weapon");
 	pugi::xml_node node3 = doc3.child("MagicAccessory");
-	Equipment* e1 = new Equipment(node1);
-	Equipment* e2 = new Equipment(node2);
-	Equipment* e3 = new Equipment(node3);
+	auto e1 = std::make_shared<Equipment>(node1);
+	auto e2 = std::make_shared<Equipment>(node2);
+	auto e3 = std::make_shared<Equipment>(node3);
 
 
 
@@ -459,7 +459,7 @@ TEST(TestMoney, TestMerchant) {
 	int coins = bob.getMoney();
 	bool r = khajiit.sellEquipment(e1, bob);
 	ASSERT_EQ(bob.getInventory(0), e1);
-	std::vector<Equipment const*> wares = khajiit.getInventory();
+	std::vector<std::shared_ptr<Equipment>> wares = khajiit.getInventory();
 	int count = 0;
 	for (auto i : wares) {
 		count += (i == e1);
@@ -530,9 +530,9 @@ TEST(TestFight, TestDef) {
 	pugi::xml_node node1 = doc1.child("MagicAccessory");
 	pugi::xml_node node2 = doc2.child("MagicAccessory");
 	pugi::xml_node node3 = doc3.child("MagicAccessory");
-	Equipment* accessory1 = new Equipment(node1);
-	Equipment* accessory2 = new Equipment(node2);
-	Equipment* accessory3 = new Equipment(node3);
+	auto accessory1 = std::make_shared<Equipment>(node1);
+	auto accessory2 = std::make_shared<Equipment>(node2);
+	auto accessory3 = std::make_shared<Equipment>(node3);
 
 	Blob bob{ "bob" };
 

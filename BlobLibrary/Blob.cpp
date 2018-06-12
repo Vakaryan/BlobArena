@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "Blob.h"         
 
 
@@ -29,7 +29,7 @@ Blob::Blob(std::string const &name)
 
 
 // ------- Constructor by level -------- //
-Blob::Blob(std::string const &name, int const& nlvl, std::vector<Equipment const*> &all_equipments, std::vector<Skill const*> &all_skills)
+Blob::Blob(std::string const &name, int const& nlvl, std::vector<std::shared_ptr<Equipment>> &all_equipments, std::vector<std::shared_ptr<Skill>> &all_skills)
 	: name(name),
 	lvl(nlvl),
 	alive(true),
@@ -216,7 +216,7 @@ std::pair<double, AttType::AttType> Blob::useSkill(int id) {
 
 
 // ------- Equip something method -------- //
-void Blob::equip(Equipment const* e) {
+void Blob::equip(std::shared_ptr<Equipment> e) {
 	if (e) {
 		switch (e->type) {
 		case armor:
@@ -224,12 +224,12 @@ void Blob::equip(Equipment const* e) {
 				if (e->eqLVL > inventory[e->type]->eqLVL) {
 					def -= inventory[e->type]->buff;
 					def += e->buff;
-					inventory[e->type] = e;
+					inventory[e->type] = move(e);
 				}
 			}
 			else {
 				def += e->buff;
-				inventory[e->type] = e;
+				inventory[e->type] = move(e);
 			}
 			break;
 		case weapon:
@@ -237,12 +237,12 @@ void Blob::equip(Equipment const* e) {
 				if (e->eqLVL > inventory[e->type]->eqLVL) {
 					atk -= inventory[e->type]->buff;
 					atk += e->buff;
-					inventory[e->type] = e;
+					inventory[e->type] = move(e);
 				}
 			}
 			else {
 				atk += e->buff;
-				inventory[e->type] = e;
+				inventory[e->type] = move(e);
 			}
 			break;
 		case accessory:
@@ -252,13 +252,13 @@ void Blob::equip(Equipment const* e) {
 					AttType::AttType cur_a = inventory[e->type]->attribute;
 					magic[cur_a] -= inventory[e->type]->buff;
 					magic[new_a] += e->buff;
-					inventory[e->type] = e;
+					inventory[e->type] = move(e);
 					updateMainMag();
 				}
 			}
 			else {
 				magic[new_a] += e->buff;
-				inventory[e->type] = e;
+				inventory[e->type] = move(e);
 				updateMainMag();
 			}
 			break;
@@ -288,9 +288,9 @@ int Blob::getHit(int const &dmg, bool defense_mode, AttType::AttType t) {
 
 
 // ------- Get a new skill method -------- //
-void Blob::getSkill(Skill const* s) {
+void Blob::getSkill(std::shared_ptr<Skill> s) {
 	if (skills.empty()) {
-		skills.push_back(s);
+		skills.push_back(move(s));
 		return;
 	}
 	for (auto i : skills) {
@@ -298,7 +298,7 @@ void Blob::getSkill(Skill const* s) {
 			return;
 		}
 	}
-	skills.push_back(s);
+	skills.push_back(move(s));
 }
 
 
@@ -325,7 +325,7 @@ int Blob::sellCorpse(int lvladv) {
 
 
 // ------- Buy an equipment method -------- //
-void Blob::buyEquipment(Equipment const* e) {
+void Blob::buyEquipment(std::shared_ptr<Equipment> e) {
 	money -= e->price;
 	equip(e);
 }
@@ -389,12 +389,12 @@ void Blob::resetStats() {
 
 
 // ------- Getter for skills -------- //
-std::vector<Skill const*> Blob::getKnownSkills() const {
+std::vector<std::shared_ptr<Skill>>& Blob::getKnownSkills() {
 	return skills;
 }
 
 // ------- Getter for inventory -------- //
-Equipment const* Blob::getInventory(int id) const {
+std::shared_ptr<Equipment>& Blob::getInventory(int id) {
 	assert(id == 0 || id == 1 || id == 2);
 	return inventory[id];
 }
@@ -442,7 +442,7 @@ float Blob::getSize() const {
 
 
 // ------- Is equal method -------- //
-bool Blob::isEqual(Blob const &b) const{
+bool Blob::isEqual(Blob &b) const{
 	return (name == b.getName()
 		&& getStats() == b.getStats()
 		&& getMainMag() == b.getMainMag()
@@ -520,7 +520,3 @@ sf::Color colorSFRGB(int i) {
 	}
 }
 
-// ------- == operator -------- //
-bool operator==(Blob const &b1, Blob const &b2) {
-	return (b1.isEqual(b2));
-}

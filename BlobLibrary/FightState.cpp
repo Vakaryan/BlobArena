@@ -1,9 +1,11 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "FightState.h"
 
 
+int tab = 0;
 
-FightState::FightState(Blob& player, int &roundNo, std::string const &name, std::vector<Equipment const*> &all_equipments, std::vector<Skill const*> &all_skills, sf::RenderWindow* window)
+
+FightState::FightState(Blob& player, int &roundNo, std::string const &name, std::vector<std::shared_ptr<Equipment>> &all_equipments, std::vector<std::shared_ptr<Skill>> &all_skills, sf::RenderWindow* window)
 	: GameState(player, window),
 	roundNo(roundNo),
 	wonOrLost(false),
@@ -21,10 +23,13 @@ FightState::FightState(Blob& player, int &roundNo, std::string const &name, std:
 
 
 void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpell menuS, MenuEndFight menuE, int idMenu, Blob &adv, TextBox &tb) {
-	
+	window->setFramerateLimit(60);
+	ImGui::SFML::Init(*window);
+	sf::Clock deltaClock;
 	sf::Event event;
 	std::string smain;
-	if (!wonOrLost) {
+	
+	if (roundOver) {
 		smain = "What do you want to do?\n";
 	}
 	else {
@@ -36,6 +41,7 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 
 		sf::Event event;
 		while (window->pollEvent(event)) {
+			ImGui::SFML::ProcessEvent(event);
 
 			switch (event.type) {
 			
@@ -156,9 +162,42 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 			}
 		}
 
+		//ImGui
+		ImGui::SFML::Update(*window, deltaClock.restart());
+		
 		window->clear();
 
+		ImGui::Begin("Blob balancing");
+		if (ImGui::Button("Player", ImVec2(100, 30))) {
+			tab = 1;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Opponent", ImVec2(100, 30))) {
+			tab = 2;
+		}
+		ImGui::BeginChild(1, ImVec2(300, 150), true);
+		switch (tab) {
+		case 1:
+			ImGui::SliderInt("HP", &player.HP, 0, player.MAX_HP);
+			ImGui::SliderInt("EP", &player.EP, 0, player.MAX_EP);
+			ImGui::SliderInt("ATK", &player.atk, 0, 50);
+			ImGui::SliderInt("DEF", &player.def, 0, 50);
+			ImGui::SliderInt("MAIN MAGIC", &player.magic[player.main_mag], 0, 50);
+			break;
+		case 2:
+			ImGui::SliderInt("HP", &adv.HP, 0, adv.MAX_HP);
+			ImGui::SliderInt("EP", &adv.EP, 0, adv.MAX_EP);
+			ImGui::SliderInt("ATK", &adv.atk, 0, 50);
+			ImGui::SliderInt("DEF", &adv.def, 0, 50);
+			ImGui::SliderInt("MAIN MAGIC", &adv.magic[adv.main_mag], 0, 50);
+		}
+		ImGui::EndChild();
+		ImGui::End();
 		
+		ImGui::SFML::Render(*window);
+
+		
+		//Draw menu
 		switch (idMenu) {
 		case 1:
 			menuF.draw(*window);
@@ -171,9 +210,12 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 			break;
 		}
 
+		//Draw arena
 		drawArena(main_window, player, adv);
 
-		if (endFight && idMenu != 3) {
+
+		//Endfight management
+		if (endFight && idMenu != 3 && !roundOver) {
 			wonOrLost = player.isAlive();
 			if (wonOrLost) {
 				smain = "Fight won\n";
@@ -197,7 +239,6 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 						tb.draw(*main_window, smain, 24);
 						window->display();
 						roundOver = true;
-						return;
 					}
 				}
 				else {
@@ -205,7 +246,6 @@ void FightState::inputManager(sf::RenderWindow* window, MenuFight menuF, MenuSpe
 					tb.draw(*main_window, smain, 24);
 					window->display();
 					roundOver = true;
-					return;
 				}
 			}
 			tb.draw(*main_window, smain, 24);
@@ -553,3 +593,4 @@ void FightState::drawArena(sf::RenderWindow* window, Blob &plyr, Blob &adv) {
 	player.drawStats(main_window, boxL);
 	adv.drawStats(main_window, boxR);
 }
+
